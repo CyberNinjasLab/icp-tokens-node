@@ -1,17 +1,17 @@
 version: "3"
 
 services:
-  express-api:
-    container_name: express-api
+  icp-onchain:
+    container_name: icp-onchain
     build:
       context: .
-      dockerfile: ./servers/express-api/prod.Dockerfile
+      dockerfile: ./servers/icp-onchain/prod.Dockerfile
       args:
-        PROJECT: express-api
+        PROJECT: icp-onchain
         TURBO_TEAM: $TURBO_TEAM
         TURBO_TOKEN: $TURBO_TOKEN
       tags:
-        - ghcr.io/CyberNinjasLab/icp-node-backend/express-api
+        - ghcr.io/cyberninjaslab/icp-node-backend/icp-onchain
     restart: always
     ports:
       - 3001:3001

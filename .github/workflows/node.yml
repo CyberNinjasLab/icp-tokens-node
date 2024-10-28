@@ -23,7 +23,7 @@ concurrency:
 
 env:
   FOLDER_LOCATION: servers
-  IMAGE_REPOSITORY: ghcr.io/CyberNinjasLab/icp-node-backend
+  IMAGE_REPOSITORY: ghcr.io/cyberninjaslab/icp-node-backend
 
 jobs:
   file-changes:
