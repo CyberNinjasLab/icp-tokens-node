@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  express-api:
+    container_name: express-api
+    build:
+      context: .
+      dockerfile: ./servers/express-api/prod.Dockerfile
+      args:
+        PROJECT: express-api
+        TURBO_TEAM: $TURBO_TEAM
+        TURBO_TOKEN: $TURBO_TOKEN
+      tags:
+        - ghcr.io/CyberNinjasLab/icp-node-backend/express-api
+    restart: always
+    ports:
+      - 3001:3001
+    networks:
+      - app_network
+    stop_grace_period: 1s
+
+networks:
+  app_network:

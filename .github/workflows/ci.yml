@@ -1,0 +1,39 @@
+name: node-CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  # fork
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  node-CI:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v8
+
+      - uses: pnpm/action-setup@v4
+
+      # Cache node_modules
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm exec turbo run lint test build
+        env:
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
