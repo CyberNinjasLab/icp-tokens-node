@@ -15,6 +15,17 @@ This Turborepo includes the following:
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
+# Requirements
+If running in Mac make sure to install brew.sh package manager and install the following:
+```
+brew install docker
+brew install nvm
+nvm install v20.9.0
+nvm use v20.9.0
+npm install -g pnpm@8.15.9
+pnpm install -g turbo@2.2.3 vercel@36.0.0 nodemon@3.1.3 graphqurl@1.0.3
+```
+
 ### Docker
 Install docker and docker-compose.
 ```
@@ -32,7 +43,7 @@ docker kill $(docker ps -q) && docker rm $(docker ps -a -q)
 ```
 
 ### Remote Caching
-
+Not working yet. Skip.
 Login to Vercel Turbo using the following command:
 
 ```
