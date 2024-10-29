@@ -23,7 +23,7 @@ brew install nvm
 nvm install v20.9.0
 nvm use v20.9.0
 npm install -g pnpm@8.15.9
-pnpm install -g turbo@2.2.3 vercel@36.0.0 nodemon@3.1.3 graphqurl@1.0.3
+pnpm install -g turbo@2.2.3 vercel@36.0.0 nodemon@3.1.3 graphqurl@1.0.3 @antfu/ni@0.22.1
 ```
 
 ### Docker
