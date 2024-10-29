@@ -4,7 +4,7 @@ import { Routes } from '../interfaces/routes.interface';
 
 export class ICPRoute implements Routes {
   public path = '/api';
-  public router = Router();
+  public router: Router = Router();
   public icpController = new ICPController();
 
   constructor() {
@@ -12,6 +12,6 @@ export class ICPRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, this.icpController.getAllTokens);
+    this.router.get(`${this.path}/tokens`, this.icpController.getAllTokens);
   }
 }
