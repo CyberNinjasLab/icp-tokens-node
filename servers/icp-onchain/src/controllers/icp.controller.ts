@@ -1,24 +1,31 @@
 import { Request, Response } from 'express';
-import ic from 'ic0';
-import { utils } from '../utils/utils';
 
-const icpswap_service = ic("moe7a-tiaaa-aaaag-qclfq-cai");
+import ic from 'ic0';
+
+import { utils } from './../utils/utils';
+
+import { HttpException } from './../exceptions/HttpException';
 
 export class ICPController {
 
+  private logContext = 'ICP Controller';
+
+  private icpswap_service = ic("moe7a-tiaaa-aaaag-qclfq-cai");
+
   public getAllTokens = async (req: Request, res: Response): Promise<void> => {
-    try {
-      // Call the service to get all tokens
-      const tokens = await icpswap_service.call('getAllTokens');
+    const logContext = `${this.logContext} -> getAllTokens()`;
 
-      // Extract canister IDs
-      const canisterIds: string[] = tokens.map((token: { address: string }) => token.address);
+    // Call the service to get all tokens
+    const tokens = await this.icpswap_service.call('getAllTokens')
+      .catch(err => {
+        throw new HttpException(500, err.message, logContext);
+      })
 
-      // Send the response
-      res.json(JSON.stringify(canisterIds, utils.replacer));
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to retrieve tokens' });
-    }
+    // Extract canister IDs
+    const canisterIds: string[] = tokens.map((token: { address: string }) => token.address);
+
+    // Send the response
+    res.json(JSON.stringify(canisterIds, utils.replacer));
   };
 
 }

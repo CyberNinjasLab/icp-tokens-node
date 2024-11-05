@@ -1,17 +1,13 @@
 import { Router } from 'express';
-import { ICPController } from '../controllers/icp.controller';
-import { Routes } from '../interfaces/routes.interface';
+import { ICPController } from './../controllers/icp.controller';
 
-export class ICPRoute implements Routes {
-  public path = '/api';
-  public router: Router = Router();
-  public icpController = new ICPController();
+import CatchUtil from './../utils/catch.util';
 
-  constructor() {
-    this.initializeRoutes();
-  }
+const useCatch = CatchUtil.getUseCatch();
+const icpController = new ICPController();
 
-  private initializeRoutes() {
-    this.router.get(`${this.path}/tokens`, this.icpController.getAllTokens);
-  }
-}
+const ICPRouter: Router = Router();
+
+ICPRouter.get('/', useCatch(icpController.getAllTokens));
+
+export default ICPRouter;

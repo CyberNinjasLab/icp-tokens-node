@@ -7,29 +7,38 @@ import express from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
+
 import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from './config';
-import { Routes } from './interfaces/routes.interface';
+
+import logger from './utils/logger.util';
+
+import ErrorMiddleware from './middlewares/error.middleware';
+
+import MainRouter from './routes/main.router';
 
 export class App {
   public app: express.Application;
   public env: string;
   public port: string | number;
 
-  constructor(routes: Routes[]) {
+  constructor() {
     this.app = express();
     this.env = NODE_ENV || 'development';
     this.port = PORT || 3000;
 
-    this.initializeRoutes(routes);
     this.initializeMiddlewares();
+
+    this.app.use(MainRouter);
+    this.app.use(new ErrorMiddleware().init);
   }
 
   public listen() {
     this.app.listen(this.port, () => {
-      console.info(`=================================`);
-      console.info(`======= ENV: ${this.env} =======`);
-      console.info(`🚀 App listening on the port ${this.port}`);
-      console.info(`=================================`);
+      logger.info(`
+        \n ======= ENV: ${this.env} ======= 
+        \n 🚀 App listening on the port ${this.port} 
+        \n =================================`
+      );
     });
   }
 
@@ -48,9 +57,4 @@ export class App {
     this.app.use(cookieParser());
   }
 
-  private initializeRoutes(routes: Routes[]) {
-    routes.forEach(route => {
-      this.app.use('/', route.router);
-    });
-  }
 }
