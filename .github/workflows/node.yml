@@ -23,7 +23,7 @@ concurrency:
 
 env:
   FOLDER_LOCATION: servers
-  IMAGE_REPOSITORY: ghcr.io/cyberninjaslab/icp-node-backend
+  IMAGE_REPOSITORY: ghcr.io/cyberninjaslab/icp-tokens-node
 
 jobs:
   file-changes:
@@ -100,7 +100,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile -F ${{ matrix.project }}
 
-      - run: pnpm exec turbo run -F ${{ matrix.project }} build
+      - run: pnpm exec turbo run -F @icptokens/${{ matrix.project }} build
         env:
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
