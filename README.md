@@ -43,10 +43,10 @@ docker kill $(docker ps -q) && docker rm $(docker ps -a -q)
 ```
 
 ### Remote Caching
-Not working yet. Skip.
 Login to Vercel Turbo using the following command:
 
 ```
+export TURBO_TOKEN=your_token_here
 pnpx turbo login
 pnpx turbo link # select the team you want to link to
 ```

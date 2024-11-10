@@ -60,4 +60,4 @@ COPY --from=builder --chown=nodejs:nodejs /app .
 
 ENV PROJECT_FOLDER=${PROJECT_FOLDER}
 
-CMD node servers/${PROJECT_FOLDER}/dist/index.js
+CMD node services/${PROJECT_FOLDER}/dist/index.js

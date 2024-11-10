@@ -47,7 +47,7 @@ importers:
 
   packages/typescript-config: {}
 
-  servers/core:
+  services/core:
     dependencies:
       body-parser:
         specifier: ^1.20.2

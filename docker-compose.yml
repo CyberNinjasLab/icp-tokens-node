@@ -5,7 +5,7 @@ services:
     container_name: core
     build:
       context: .
-      dockerfile: ./servers/core/prod.Dockerfile
+      dockerfile: ./services/core/prod.Dockerfile
       args:
         PROJECT: "@icptokens/core"
         PROJECT_FOLDER: core

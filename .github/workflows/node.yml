@@ -1,4 +1,4 @@
-name: node-servers
+name: node-services
 
 on:
   push:
@@ -7,10 +7,10 @@ on:
     branches:
       - main
     paths:
-      - 'servers/**'
+      - 'services/**'
   pull_request:
     paths:
-      - 'servers/**'
+      - 'services/**'
 
 permissions:
   actions: read
@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  FOLDER_LOCATION: servers
+  FOLDER_LOCATION: services
   IMAGE_REPOSITORY: ghcr.io/cyberninjaslab/icp-tokens-node
 
 jobs:
