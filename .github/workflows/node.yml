@@ -98,7 +98,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
 
-      - run: pnpm install --frozen-lockfile -F ${{ matrix.project }}
+      - run: pnpm install --frozen-lockfile -F @icptokens/${{ matrix.project }}
 
       - run: pnpm exec turbo run -F @icptokens/${{ matrix.project }} build
         env:

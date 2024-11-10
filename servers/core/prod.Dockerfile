@@ -47,7 +47,7 @@ RUN rm -rf ./**/*/src
 
 # Final image
 FROM alpine AS runner
-ARG PROJECT
+ARG PROJECT_FOLDER
 
 ENV NODE_ENV=production
 
@@ -58,6 +58,6 @@ USER nodejs
 WORKDIR /app
 COPY --from=builder --chown=nodejs:nodejs /app .
 
-ENV PROJECT=${PROJECT}
+ENV PROJECT_FOLDER=${PROJECT_FOLDER}
 
-CMD node servers/${PROJECT}/dist/index.js
+CMD node servers/${PROJECT_FOLDER}/dist/index.js

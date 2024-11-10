@@ -7,7 +7,8 @@ services:
       context: .
       dockerfile: ./servers/core/prod.Dockerfile
       args:
-        PROJECT: core
+        PROJECT: "@icptokens/core"
+        PROJECT_FOLDER: core
         TURBO_TEAM: $TURBO_TEAM
         TURBO_TOKEN: $TURBO_TOKEN
       tags:
