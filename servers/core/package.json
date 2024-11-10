@@ -1,5 +1,5 @@
 {
-  "name": "icp-onchain",
+  "name": "@icptokens/core",
   "version": "0.0.0",
   "private": true,
   "scripts": {

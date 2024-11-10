@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { ICPController } from './../controllers/icp.controller';
+import { ICPController } from '../controllers/icp.controller';
 
-import CatchUtil from './../utils/catch.util';
+import CatchUtil from '../utils/catch.util';
 
 const useCatch = CatchUtil.getUseCatch();
 const icpController = new ICPController();

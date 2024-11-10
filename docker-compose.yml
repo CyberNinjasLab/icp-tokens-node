@@ -1,17 +1,17 @@
 version: "3"
 
 services:
-  icp-onchain:
-    container_name: icp-onchain
+  core:
+    container_name: core
     build:
       context: .
-      dockerfile: ./servers/icp-onchain/prod.Dockerfile
+      dockerfile: ./servers/core/prod.Dockerfile
       args:
-        PROJECT: icp-onchain
+        PROJECT: core
         TURBO_TEAM: $TURBO_TEAM
         TURBO_TOKEN: $TURBO_TOKEN
       tags:
-        - ghcr.io/cyberninjaslab/icp-node-backend/icp-onchain
+        - ghcr.io/cyberninjaslab/icp-node-backend/core
     restart: always
     ports:
       - 3000:3000

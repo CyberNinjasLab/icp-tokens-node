@@ -1,6 +1,6 @@
 import { ErrorRequestHandler } from 'express';
 
-import { HttpException } from './../exceptions/HttpException';
+import { HttpException } from '../exceptions/HttpException';
 
 export default class ErrorMiddleware {
 

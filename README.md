@@ -8,7 +8,7 @@ This Turborepo includes the following:
 
 ### Apps and Packages
 
-- `icp-onchain`: an [Express](https://expressjs.com/) server
+- `core`: an [Express](https://expressjs.com/) server
 - `@repo/eslint-config`: ESLint presets
 - `@repo/typescript-config`: tsconfig.json's used throughout the monorepo
 - `@repo/jest-presets`: Jest configurations
@@ -30,7 +30,7 @@ pnpm install -g turbo@2.2.3 vercel@36.0.0 nodemon@3.1.3 graphqurl@1.0.3 @antfu/n
 Install docker and docker-compose.
 ```
 alias dc='docker-compose'
-dc up icp-onchain --build
+dc up core --build
 ```
 
 Open http://localhost:3001/api.
@@ -68,6 +68,6 @@ This Turborepo has some additional tools already setup for you:
 turbo run lint
 turbo run test
 turbo run build
-turbo run -F icp-onchain dev
-turbo run -F icp-onchain start
+turbo run -F @icptokens/core dev
+turbo run -F @icptokens/core start
 ```

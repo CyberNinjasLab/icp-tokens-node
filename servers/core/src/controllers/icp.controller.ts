@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 
 import ic from 'ic0';
 
-import { utils } from './../utils/utils';
+import { utils } from '../utils/utils';
 
-import { HttpException } from './../exceptions/HttpException';
+import { HttpException } from '../exceptions/HttpException';
 
 export class ICPController {
 

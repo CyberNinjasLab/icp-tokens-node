@@ -47,7 +47,7 @@ importers:
 
   packages/typescript-config: {}
 
-  servers/icp-onchain:
+  servers/core:
     dependencies:
       body-parser:
         specifier: ^1.20.2
