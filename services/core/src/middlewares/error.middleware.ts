@@ -4,7 +4,7 @@ import { HttpException } from '../exceptions/HttpException';
 
 export default class ErrorMiddleware {
 
-  public init: ErrorRequestHandler = (err: HttpException, req, res) => {
+  public init: ErrorRequestHandler = (err: HttpException, req, res, next) => {
     this.log(err);
 
     const status = err.status || 500;
