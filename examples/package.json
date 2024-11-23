@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@dfinity/agent": "^2.1.3",
+    "@dfinity/ledger-icp": "^2.6.3",
     "@dfinity/principal": "^2.1.3",
     "@dfinity/sns": "^3.2.3",
     "@dfinity/utils": "^2.6.0"
@@ -16,6 +17,7 @@
   "devDependencies": {
     "@types/node": "^18.11.0",
     "ts-node": "^10.9.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "@icp-tokens-node/nns-integration-package": "file:../packages/NNS-integration-package"
   }
 }
