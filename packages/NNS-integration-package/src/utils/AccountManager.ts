@@ -1,6 +1,10 @@
 import { Principal } from '@dfinity/principal';
+import { createAgent } from "@dfinity/utils";
+import { AnonymousIdentity } from "@dfinity/agent";
+import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
+import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import * as crypto from 'crypto';
-import { NNS_LEDGER_TOKEN_DISTRIBUTION_DOMAIN } from './config';
+import { ICP_LEDGER_CANISTER_ID, NNS_LEDGER_TOKEN_DISTRIBUTION_DOMAIN } from './config';
 
 /**
  * AccountManager provides utility methods for computing subaccounts
@@ -43,43 +47,78 @@ export class AccountManager {
      * @returns A 32-byte hash representing the subaccount.
      */
     public static computeDistributionSubaccountBytes(
-        principalId: Principal,
+        governancePrincipalId: Principal,
         nonce: bigint
     ): Uint8Array {
         return this.computeNeuronDomainSubaccountBytes(
-            principalId,
+            governancePrincipalId,
             NNS_LEDGER_TOKEN_DISTRIBUTION_DOMAIN,
             nonce
         );
     }
 
     /**
-     * Generates the account ID and token details for a distribution account.
+     * Fetches the ICP Treasury Balance of a SNS Governance canister
      *
-     * @param governanceCanister - The principal ID of the governance canister.
-     * @param distributionAccountNonce - A unique 64-bit number for differentiation.
-     * @param amountE8s - The token amount in e8s (smallest unit of the token).
-     * @returns An object containing the account details and tokens.
+     * @param governancePrincipalId - The principal ID of the governance canister.
+     * @returns The ICP treasury balance as a number.
      */
-    public static getDistributionAccountIdAndTokens(
-        governanceCanister: Principal,
-        distributionAccountNonce: bigint,
-        amountE8s: bigint
-    ): { account: { owner: string; subaccount: string }; tokens: { e8s: bigint } } {
-        const subaccount = this.computeDistributionSubaccountBytes(
-            governanceCanister,
-            distributionAccountNonce
-        );
+    public static async getIcpTreasuryBalance(
+        governancePrincipalId: Principal
+    ): Promise<bigint> {
+        const agent = await createAgent({
+            identity: new AnonymousIdentity(),
+        });
 
-        const account = {
-            owner: governanceCanister.toText(),
-            subaccount: Buffer.from(subaccount).toString('hex'),
-        };
+        // Initialize the ICP Ledger Canister
+        const { accountBalance } = LedgerCanister.create({
+            agent,
+            canisterId: Principal.fromText(ICP_LEDGER_CANISTER_ID),
+        });
 
-        const tokens = {
-            e8s: amountE8s,
-        };
+        // Fetch the ICP treasury balance
+        const governanceTreasuryAccountIdentifier = AccountIdentifier.fromPrincipal({
+            principal: governancePrincipalId,
+        });
 
-        return { account, tokens };
+        const balance = await accountBalance({
+            accountIdentifier: governanceTreasuryAccountIdentifier,
+            certified: true,
+        });
+
+        return balance;
+    }
+
+    /**
+     * Fetches the ICRC token treasury balance of a governance canister.
+     *
+     * @param governancePrincipalId - The principal ID of the governance canister.
+     * @param ledgerCanisterId - The canister ID of the ICRC Ledger.
+     * @returns The ICRC token treasury balance as a bigint.
+     */
+    public static async getIcrcTokenTreasuryBalance(
+        governancePrincipalId: Principal,
+        ledgerCanisterId: Principal
+    ): Promise<bigint> {
+        // Create an agent
+        const agent = await createAgent({
+            identity: new AnonymousIdentity(),
+        });
+
+        // Initialize the ICRC Ledger Canister
+        const icrcLedger = IcrcLedgerCanister.create({
+            agent,
+            canisterId: ledgerCanisterId,
+        });
+
+        const subaccount = this.computeDistributionSubaccountBytes(governancePrincipalId, BigInt(0));
+
+        // Fetch the treasury balance
+        const balance = await icrcLedger.balance({
+            owner: governancePrincipalId,
+            subaccount 
+        });
+
+        return balance;
     }
 }
