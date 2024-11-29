@@ -5,7 +5,8 @@
   "private": true,
   "description": "Examples and use-case scenarios for the monorepo packages.",
   "scripts": {
-    "build": "tsc --project tsconfig.json"
+    "build": "tsc --project tsconfig.json",
+    "test:sns-list": "node --loader ts-node/esm src/sns/processSnsRecords.ts"
   },
   "dependencies": {
     "@dfinity/agent": "^2.1.3",
