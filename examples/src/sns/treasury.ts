@@ -1,5 +1,5 @@
 import { Principal } from "@dfinity/principal";
-import { AccountManager as SNSAccountManager } from "@icp-tokens-node/nns-integration-package"; 
+import { AccountManager as SNSAccountManager } from "@icptokens/nns-integration"; 
 
 const governanceTreasuryBalance = {
   icp: await SNSAccountManager.getIcpTreasuryBalance(Principal.fromText("2jvtu-yqaaa-aaaaq-aaama-cai")),

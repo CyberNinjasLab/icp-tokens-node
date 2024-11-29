@@ -1,6 +1,6 @@
 {
-  "name": "@icp-tokens-node/nns-integration-package",
-  "version": "1.0.0",
+  "name": "@icptokens/nns-integration",
+  "version": "0.0.0",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -1,5 +1,5 @@
 // Import the SnsAggregatorCanister class and required types
-import { SnsAggregatorCanister, SnsAggregatorResponse } from '@icp-tokens-node/nns-integration-package';
+import { SnsAggregatorCanister, SnsAggregatorResponse } from '@icptokens/nns-integration';
 
 /**
  * This script fetches all paginated SNS data, retrieves details for each SNS,

@@ -1,7 +1,7 @@
 {
   "name": "examples",
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": true,
   "description": "Examples and use-case scenarios for the monorepo packages.",
   "scripts": {
@@ -18,6 +18,6 @@
     "@types/node": "^18.11.0",
     "ts-node": "^10.9.0",
     "typescript": "^5.0.0",
-    "@icp-tokens-node/nns-integration-package": "file:../packages/NNS-integration-package"
+    "@icptokens/nns-integration": "^0.0.0"
   }
 }
