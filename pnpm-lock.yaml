@@ -48,6 +48,9 @@ importers:
 
   packages/NNS-integration-package:
     dependencies:
+      '@dfinity/agent':
+        specifier: ^2.1.3
+        version: 2.1.3(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)
       '@dfinity/ledger-icp':
         specifier: ^2.6.3
         version: 2.6.3(@dfinity/agent@2.1.3)(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)(@dfinity/utils@2.7.0)
