@@ -28,17 +28,6 @@ export class Ledger {
     }
 
     /**
-     * Retrieves the total supply of the token from the ledger.
-     * 
-     * @returns A promise that resolves to the total supply as a bigint.
-     */
-    async getTotalSupply(): Promise<bigint> {
-        return BigInt(await this.ledger.ic.call('icrc1_total_supply').catch(() => {
-            throw new Error("Unable to determine total supply from ledger");
-        }));
-    }
-
-    /**
      * Retrieves the total number of transactions from the ledger.
      * 
      * @returns A promise that resolves to the total number of transactions as a bigint.
@@ -139,11 +128,13 @@ export class Ledger {
                 for (let i = 0; i < this.ledger.parallel_batches && startIndex >= BigInt(0); i++) {
                     const currentStartIndex = startIndex;
                     const request: GetTransactionsRequest = { start: BigInt(startIndex), length: BigInt(length) };
+
                     promises.push(
                     archiveCanister.call('get_transactions', request).then((batch: TransactionRange) => ({ startIndex: currentStartIndex, batch }))
                     );
 
                     if (startIndex === BigInt(0)) {
+                        startIndex = BigInt(-1);
                         break;
                     }
 
@@ -168,7 +159,7 @@ export class Ledger {
                     }
                 });
 
-                if (startIndex === BigInt(0)) {
+                if (startIndex < BigInt(0)) {
                     break;
                 }
             }
@@ -238,58 +229,37 @@ export class Ledger {
      * @returns A promise that resolves to an array of objects where each object contains an account identifier, principal, and its balance, sorted by balance.
      */
     async collectHoldersAndBalances(sortOrder: 'asc' | 'desc' = 'desc'): Promise<{ account: string; principal: string; balance: bigint }[]> {
-        const holders: { [account: string]: { account: string; principal: string; subaccount: string | undefined; balance: bigint } } = {};
+        const holders: Record<string, { account: string; principal: string; subaccount?: string; balance: bigint }> = {};
+
+        const updateBalance = (account: string, principal: string, subaccount: string | undefined, delta: bigint) => {
+            if (!holders[account]) {
+                holders[account] = { account, principal, subaccount, balance: BigInt(0) };
+            }
+            holders[account].balance += delta;
+        };
 
         await this.iterateTransactions((batch) => {
             batch.forEach((tx: FormattedTransaction) => {
-                if (tx.type === 'mint') {
-                    if (tx.to?.account) {
-                        const account = tx.to.account;
-                        const principal = tx.to.principal;
-                        const subaccount = tx.to.subaccount;
-                        if (!holders[account]) {
-                            holders[account] = { account, principal, subaccount, balance: BigInt(0) };
-                        }
-                        holders[account].balance += tx.value;
-                    }
-                } else if (tx.type === 'burn') {
-                    if (tx.from?.account) {
-                        const account = tx.from.account;
-                        const principal = tx.from.principal;
-                        const subaccount = tx.from.subaccount;
-                        if (!holders[account]) {
-                            holders[account] = { account, principal, subaccount, balance: BigInt(0) };
-                        }
-                        holders[account].balance -= tx.value;
-                    }
+                if (tx.type === 'mint' && tx.to?.account) {
+                    updateBalance(tx.to.account, tx.to.principal, tx.to.subaccount, tx.value);
+                } else if (tx.type === 'burn' && tx.from?.account) {
+                    updateBalance(tx.from.account, tx.from.principal, tx.from.subaccount, -tx.value);
                 } else if (tx.type === 'transfer') {
                     if (tx.from?.account) {
-                        const fromAccount = tx.from.account;
-                        const fromPrincipal = tx.from.principal;
-                        const fromSubaccount = tx.from.subaccount;
-                        if (!holders[fromAccount]) {
-                            holders[fromAccount] = { account: fromAccount, principal: fromPrincipal, subaccount: fromSubaccount, balance: BigInt(0) };
-                        }
-                        holders[fromAccount].balance -= tx.value;
-                        if (tx.fee) {
-                            holders[fromAccount].balance -= tx.fee;
-                        }
+                        updateBalance(tx.from.account, tx.from.principal, tx.from.subaccount, -tx.value);
                     }
                     if (tx.to?.account) {
-                        const toAccount = tx.to.account;
-                        const toPrincipal = tx.to.principal;
-                        const toSubaccount = tx.to.subaccount;
-                        if (!holders[toAccount]) {
-                            holders[toAccount] = { account: toAccount, principal: toPrincipal, subaccount: toSubaccount, balance: BigInt(0) };
-                        }
-                        holders[toAccount].balance += tx.value;
+                        updateBalance(tx.to.account, tx.to.principal, tx.to.subaccount, tx.value);
                     }
+                }
+    
+                if (tx.fee && tx.from?.account) {
+                    updateBalance(tx.from.account, tx.from.principal, tx.from.subaccount, -tx.fee);
                 }
             });
             return true; // Continue iterating through all transactions
         });
-
-        // Filter out accounts with balances <= 0
+        
         const positiveBalances = Object.values(holders)
             .filter(holder => holder.balance > BigInt(0));
 
