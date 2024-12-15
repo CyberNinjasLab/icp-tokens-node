@@ -13,7 +13,8 @@
     "bob:test": "node --loader ts-node/esm src/bob/launches.ts",
     "test:sns-neurons": "node --loader ts-node/esm src/sns/neurons.ts",
     "test:sns-treasury": "node --loader ts-node/esm src/sns/treasury.ts",
-    "test:icrc-transactions": "node --loader ts-node/esm src/ledger/ICRC-fetch-transactions.ts"
+    "test:icrc-transactions": "node --loader ts-node/esm src/ledger/ICRC-fetch-transactions.ts",
+    "test:token-metadata": "node --loader ts-node/esm src/ledger/Token-metadata.ts"
   },
   "dependencies": {
     "@dfinity/agent": "^2.1.3",
