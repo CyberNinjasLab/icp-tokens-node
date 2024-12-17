@@ -71,3 +71,22 @@ turbo run build
 turbo run -F @icptokens/core dev
 turbo run -F @icptokens/core start
 ```
+
+# TimescaleDB
+Connect to k8s cluster and port forward to timescale db
+```
+sudo -E kubefwd svc -n data # port forward timescale to a localhost, also changes host to be icptokens-svc locally
+```
+
+In another shell run to get secret password:
+```
+k get secret icptokens -n data -o yaml | yq -r '.data.superuser-password' | base64 -d
+```
+
+Connect to timescale db:
+```
+host: icptokens-svc
+port: 5432
+user: postgres
+password: <retrieve from kubernetes secret>
+```
