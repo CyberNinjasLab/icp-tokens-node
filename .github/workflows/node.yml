@@ -1,4 +1,4 @@
-name: node-servers
+name: node-services
 
 on:
   push:
@@ -7,10 +7,10 @@ on:
     branches:
       - main
     paths:
-      - 'servers/**'
+      - 'services/**'
   pull_request:
     paths:
-      - 'servers/**'
+      - 'services/**'
 
 permissions:
   actions: read
@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  FOLDER_LOCATION: servers
+  FOLDER_LOCATION: services
   IMAGE_REPOSITORY: ghcr.io/cyberninjaslab/icp-tokens-node
 
 jobs:
@@ -72,7 +72,7 @@ jobs:
           dirs_output=$(jq -nc '[$ARGS.positional[]]' --args "${changed_dirs[@]}")
           echo "dirs=$dirs_output" >> $GITHUB_OUTPUT
 
-  node-build:
+  docker:
     runs-on: ubuntu-latest
     needs: [file-changes]
     if: ${{ needs.file-changes.outputs.dirs != '[]' }}
@@ -98,7 +98,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
 
-      - run: pnpm install --frozen-lockfile -F ${{ matrix.project }}
+      - run: pnpm install --frozen-lockfile -F @icptokens/${{ matrix.project }}
 
       - run: pnpm exec turbo run -F @icptokens/${{ matrix.project }} build
         env:

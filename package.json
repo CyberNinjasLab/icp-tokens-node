@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "build": "turbo run build",
     "start": "turbo run start",
     "clean": "turbo run clean",
@@ -18,7 +19,7 @@
   },
   "engines": {
     "node": ">=14.0.0",
-    "npm": ">=7.0.0"
+    "pnpm": ">=8"
   },
   "packageManager": "pnpm@8.15.9"
 }
