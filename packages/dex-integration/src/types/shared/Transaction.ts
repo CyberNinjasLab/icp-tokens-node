@@ -1,4 +1,4 @@
-import { kongswap } from "..";
+// import { kongswap } from "..";
 
 export enum TransactionSource {
     KONGSWAP = "KONGSWAP",
@@ -28,7 +28,7 @@ export type TransactionInfo = {
     /**
      * Raw transaction return from the source
      */
-    raw: kongswap.Transaction;
+    // raw: kongswap.Transaction;
     /**
      * Transaction type
      */

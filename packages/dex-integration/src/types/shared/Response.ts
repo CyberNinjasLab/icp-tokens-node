@@ -1,6 +1,6 @@
 import { Account } from "@dfinity/ledger-icrc/dist/candid/icrc_index";
 import * as icpswap from "../ICPSwap";
-import * as kongswap from "../KongSwap";
+// import * as kongswap from "../KongSwap";
 import { LPInfo } from "./LPInfo";
 
 export enum LedgerTransactionType {
@@ -33,6 +33,6 @@ export type LedgerTx = LedgerApproveTx | LedgerTransferTx;
 export type PrepareSwapResponse = Array<LedgerTx>;
 export type SwapResponse = bigint;
 export type QuoteResponse = bigint;
-export type GetMetadataResponse = icpswap.PoolMetadata | kongswap.PoolMetadata | null;
-export type PoolInfoResponse = icpswap.PoolInfo | kongswap.PoolInfo | kongswap.NonLPPool | null;
+export type GetMetadataResponse = icpswap.PoolMetadata | null; // kongswap.PoolMetadata
+export type PoolInfoResponse = icpswap.PoolInfo | null; // | kongswap.PoolInfo | kongswap.NonLPPool 
 export type GetLPInfoResponse = LPInfo | null;

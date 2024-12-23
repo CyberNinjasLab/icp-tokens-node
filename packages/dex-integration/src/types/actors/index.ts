@@ -1,2 +1,2 @@
-export * as icsPool from "./icpswap/icpswapPool";
-export * as icsIndexNode from "./icpswap/icpswapNodeIndex";
+export * from "./icpswap";
+export * as kongBackend from "./kongswap/kongBackend";

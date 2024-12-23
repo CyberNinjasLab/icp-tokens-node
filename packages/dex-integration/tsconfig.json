@@ -9,6 +9,6 @@
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
     "declaration": true
   },
-  "include": ["src/**/*", "src/icrc-transactions-adapter/types.ts"], // Include all files in src
+  "include": ["src/**/*", "src/**/*.d.ts"], // Include all files in src
   "exclude": ["node_modules", "dist"] // Exclude these
 }
