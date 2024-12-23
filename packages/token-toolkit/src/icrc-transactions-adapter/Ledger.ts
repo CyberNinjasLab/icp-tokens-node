@@ -9,7 +9,7 @@ const DEFAULT_PARALLEL_BATCHES = 10;
 
 export class Ledger {
     private ledger: LedgerInstance;
-    private canisterId: string;
+    public canisterId: string;
 
     /**
      * Initializes the Ledger instance.
