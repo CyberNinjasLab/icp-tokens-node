@@ -23,8 +23,8 @@
     "@types/node": "^18.11.0",
     "ts-node": "^10.9.0",
     "typescript": "^5.0.0",
-    "@icptokens/nns-integration": "^0.0.0",
-    "@icptokens/dex-integration": "^0.0.0",
-    "@icptokens/bob-integration": "^0.0.0"
+    "@icptokens/nns-integration": "file:./../packages/nns-integration",
+    "@icptokens/dex-integration": "file:./../packages/dex-integration",
+    "@icptokens/bob-integration": "file:./../packages/bob-integration"
   }
 }

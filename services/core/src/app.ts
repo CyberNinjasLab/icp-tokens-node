@@ -8,10 +8,11 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
 
-import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from './config';
+import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS, Config } from './config';
 
 import logger from './utils/logger.util';
 
+import { DatabaseClient } from './data-layer/client';
 import ErrorMiddleware from './middlewares/error.middleware';
 
 import MainRouter from './routes/main.router';
@@ -32,14 +33,29 @@ export class App {
     this.app.use(new ErrorMiddleware().init);
   }
 
-  public listen() {
-    this.app.listen(this.port, () => {
+  public async listen() {
+    this.app.listen(this.port, async () => {
+
       logger.info(`
         \n ======= ENV: ${this.env} ======= 
         \n 🚀 App listening on the port ${this.port} 
         \n =================================`
       );
+
+      const pool = DatabaseClient.getInstance();
+
+      const query = `
+      SELECT * FROM users;
+      `;
+
+      const result = await pool.query(query)
+        .catch((err: any) => {
+          console.log(err)
+        });
+
+      console.log(result);
     });
+
   }
 
   public getServer() {
