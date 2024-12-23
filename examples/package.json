@@ -32,5 +32,5 @@
     "@icptokens/dex-integration": "file:./../packages/dex-integration",
     "@icptokens/bob-integration": "file:./../packages/bob-integration",
     "@icptokens/token-toolkit": "file:./../packages/token-toolkit"
-  },
+  }
 }
