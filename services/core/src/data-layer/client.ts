@@ -1,23 +1,41 @@
-import { Pool } from 'pg';
+import { Sequelize } from 'sequelize';
 
 import { Config } from './../config';
 
-export class DatabaseClient {
+const config = Config.getInstance();
 
-  private static instance: Pool | null = null;
+class DatabaseClient {
 
-  private static config = Config.getInstance();
+  constructor() {
+    this.init();
+  }
 
-  public static getInstance(): Pool {
-    if (!this.instance) {
-        this.instance = new Pool({
-          ...this.config.postgressConfig,
-          max: 30, // Maximum number of clients in the pool
-          idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
-          connectionTimeoutMillis: 2000, // Wait up to 2 seconds for a new connection
-        });
-    }
+  public sequelize = new Sequelize(this.getUrl(),
+  {
+    dialect: 'postgres',
+    protocol: 'postgres',
+    logging: false, // Disable logging for production
+    pool: {
+      max: 10,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
+  });
 
-    return this.instance;
+  private logContext = 'DataBaseClient';
+
+  private getUrl(): string {
+    return `postgres://${config.postgressConfig.user}:${config.postgressConfig.password}@${config.postgressConfig.host}:${config.postgressConfig.port}/${config.postgressConfig.database}`;
+  }
+
+  private async init(): Promise<void> {
+    await this.sequelize.authenticate()
+      .then(() => logger.info('Database connected'))
+      .catch((err) => logger.error(err.message, this.logContext));
   }
 }
+
+const db = new DatabaseClient();
+
+export default db.sequelize;

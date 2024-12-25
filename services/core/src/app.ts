@@ -12,7 +12,6 @@ import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS, Config } from './confi
 
 import logger from './utils/logger.util';
 
-import { DatabaseClient } from './data-layer/client';
 import ErrorMiddleware from './middlewares/error.middleware';
 
 import MainRouter from './routes/main.router';
@@ -41,19 +40,6 @@ export class App {
         \n 🚀 App listening on the port ${this.port} 
         \n =================================`
       );
-
-      const pool = DatabaseClient.getInstance();
-
-      const query = `
-      SELECT * FROM users;
-      `;
-
-      const result = await pool.query(query)
-        .catch((err: any) => {
-          console.log(err)
-        });
-
-      console.log(result);
     });
 
   }
