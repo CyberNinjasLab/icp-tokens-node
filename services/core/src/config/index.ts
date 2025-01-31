@@ -19,8 +19,6 @@ export class Config {
 
   public static getInstance(): Config {
     if (!Config.instance) {
-        console.log(process.env.POSTGRES_USER);
-
       Config.instance = new Config();
     }
 

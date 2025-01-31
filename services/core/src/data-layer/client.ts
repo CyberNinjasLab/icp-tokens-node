@@ -1,5 +1,4 @@
 import { Sequelize } from 'sequelize';
-
 import { Config } from './../config';
 
 const config = Config.getInstance();
@@ -10,10 +9,15 @@ class DatabaseClient {
     this.init();
   }
 
-  public sequelize = new Sequelize(this.getUrl(),
-  {
+  private logContext = 'DatabaseClient';
+
+  public sequelize = new Sequelize({
     dialect: 'postgres',
-    protocol: 'postgres',
+    host: config.postgressConfig.host,
+    port: Number(config.postgressConfig.port),
+    database: config.postgressConfig.database,
+    username: config.postgressConfig.user,
+    password: config.postgressConfig.password,
     logging: false, // Disable logging for production
     pool: {
       max: 10,
@@ -23,19 +27,29 @@ class DatabaseClient {
     },
   });
 
-  private logContext = 'DataBaseClient';
-
-  private getUrl(): string {
-    return `postgres://${config.postgressConfig.user}:${config.postgressConfig.password}@${config.postgressConfig.host}:${config.postgressConfig.port}/${config.postgressConfig.database}`;
-  }
-
   private async init(): Promise<void> {
     await this.sequelize.authenticate()
-      .then(() => logger.info('Database connected'))
-      .catch((err) => logger.error(err.message, this.logContext));
+      .then(() => logger.info(`[${this.logContext}] Database connected`))
+      .catch((err) => logger.error(`Database connection error: ${err.message}`, `${this.logContext} -> init()`));
   }
+
+  public async close(): Promise<void> {
+    await this.sequelize.close()
+      .then(() => logger.info(`[${this.logContext}] Database connection closed`))
+      .catch((err) => logger.error(`Error closing database connection: ${err.message}`, `${this.logContext} -> close()`));
+  }
+
+  public static getInstance(): DatabaseClient {
+    if (!DatabaseClient.instance) {
+      DatabaseClient.instance = new DatabaseClient();
+    }
+
+    return DatabaseClient.instance;
+  }
+
+  private static instance: DatabaseClient;
 }
 
-const db = new DatabaseClient();
+const db = DatabaseClient.getInstance();
 
-export default db.sequelize;
+export default db;
