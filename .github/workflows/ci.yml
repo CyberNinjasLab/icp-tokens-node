@@ -31,7 +31,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
 
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install --no-frozen-lockfile
 
       - run: pnpm exec turbo run lint test build
         env:
