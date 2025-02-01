@@ -1,6 +1,10 @@
 import { PublicPoolOverView } from "./actors/icpswap/icpswapNodeIndex";
 import { PoolMetadata as ActorPoolMetadata, SwapArgs } from "./actors/icpswap/icpswapPool";
 import { Token as GeneralToken } from "./shared";
+import { Transaction as IcpSwapTransaction } from "./actors/icpswap/icpswapBaseStorage";
+import { icsBaseStorage } from "./actors";
+
+export type Transaction = IcpSwapTransaction;
 
 export type Token = GeneralToken & {
     standard: string;
@@ -15,6 +19,10 @@ export type Token = GeneralToken & {
     priceUSD?: number;
     symbol: string;
     name: string;
+};
+
+export type BaseStorageActor = icsBaseStorage._SERVICE & {
+    canister_id: string;
 };
 
 export type PoolMetadata = ActorPoolMetadata;

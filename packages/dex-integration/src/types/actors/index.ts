@@ -1,2 +1,4 @@
 export * from "./icpswap";
-export * as kongBackend from "./kongswap/kongBackend";
+export * as kongBase from "./kongswap/kongBase";
+export * as kongData from "./kongswap/kongData";
+export * as sonicSwapCapRoot from "./sonic/sonicSwapCapRoot";

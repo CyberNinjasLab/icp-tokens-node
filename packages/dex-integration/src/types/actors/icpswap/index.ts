@@ -1,2 +1,4 @@
 export * as icsPool from "./icpswapPool";
-export * as icsIndexNode from "./icpswapNodeIndex";
+export * as icsNodeIndex from "./icpswapNodeIndex";
+export * as icsBaseIndex from "./icpswapBaseIndex";
+export * as icsBaseStorage from "./icpswapBaseStorage";

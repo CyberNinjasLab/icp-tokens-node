@@ -1,38 +1,50 @@
-// import { kongswap } from "..";
-
+import { kongswap } from "..";
+import { icswap } from "..";
+import { Event as SonicTransaction } from "../actors/sonic/sonicSwapCapRoot";
 export enum TransactionSource {
     KONGSWAP = "KONGSWAP",
     ICPSWAP = "ICPSWAP",
+    SONIC = "SONIC",
 }
 
 export enum TransactionType {
     SWAP = "SWAP",
     ADD_LIQUIDITY = "ADD_LIQUIDITY",
-    REMOVE_LIQUIDITY = "REMOVE_LIQUIDITY",
+    DECREASE_LIQUIDITY = "DECREASE_LIQUIDITY",
     CREATE_POOL = "CREATE_POOL",
+    CLAIM = "CLAIM",
+    MINT = "MINT",
 }
 
 export type TransactionInfo = {
     /**
-     * Transaction timestamp
+     * Transaction type
      */
-    ts: bigint;
-    /**
-     * Transaction ID based on the source
-     */
-    id: string;
+    type: TransactionType;
     /**
      * Transaction source
      */
     source: TransactionSource;
     /**
+     * Transaction ID based on the source
+     */
+    id: string;
+    /**
+     * PID (Canister or User)
+     */
+    from: string;
+    /**
+     * PID (Canister or User)
+     */
+    to: string;
+    /**
+     * Transaction timestamp
+     */
+    ts: bigint;
+    /**
      * Raw transaction return from the source
      */
-    // raw: kongswap.Transaction;
-    /**
-     * Transaction type
-     */
-    type: TransactionType;
+    raw: kongswap.Transaction | icswap.Transaction | SonicTransaction;
 };
 
 export type SwapTransaction = TransactionInfo & {
