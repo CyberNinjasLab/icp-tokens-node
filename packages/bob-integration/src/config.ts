@@ -1,0 +1,1 @@
+export const BOB_FUN_BASE_ACTOR_ID = "h7uwa-hyaaa-aaaam-qbgvq-cai";

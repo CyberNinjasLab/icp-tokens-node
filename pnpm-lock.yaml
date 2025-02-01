@@ -19,31 +19,90 @@ importers:
     dependencies:
       '@dfinity/agent':
         specifier: ^2.1.3
-        version: 2.1.3(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)
+        version: 2.2.0(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
       '@dfinity/ledger-icp':
         specifier: ^2.6.3
-        version: 2.6.3(@dfinity/agent@2.1.3)(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)(@dfinity/utils@2.7.0)
+        version: 2.6.5(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0)
       '@dfinity/principal':
         specifier: ^2.1.3
-        version: 2.1.3
+        version: 2.2.0
       '@dfinity/sns':
         specifier: ^3.2.3
-        version: 3.2.4(@dfinity/agent@2.1.3)(@dfinity/candid@2.1.3)(@dfinity/ledger-icrc@2.6.3)(@dfinity/principal@2.1.3)(@dfinity/utils@2.7.0)
+        version: 3.2.6(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/ledger-icrc@2.7.0)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0)
       '@dfinity/utils':
         specifier: ^2.6.0
-        version: 2.7.0(@dfinity/agent@2.1.3)(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)
+        version: 2.8.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
     devDependencies:
+      '@icptokens/bob-integration':
+        specifier: ^0.0.0
+        version: link:../packages/bob-integration
+      '@icptokens/dex-integration':
+        specifier: ^0.0.0
+        version: link:../packages/dex-integration
       '@icptokens/nns-integration':
         specifier: ^0.0.0
         version: link:../packages/nns-integration
       '@types/node':
         specifier: ^18.11.0
-        version: 18.19.65
+        version: 18.19.68
       ts-node:
         specifier: ^10.9.0
-        version: 10.9.2(@types/node@18.19.65)(typescript@5.7.2)
+        version: 10.9.2(@types/node@18.19.68)(typescript@5.7.2)
       typescript:
         specifier: ^5.0.0
+        version: 5.7.2
+
+  packages/bob-integration:
+    dependencies:
+      '@dfinity/agent':
+        specifier: ^2.2.0
+        version: 2.2.0(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
+      '@dfinity/candid':
+        specifier: ^2.2.0
+        version: 2.2.0(@dfinity/principal@2.2.0)
+      '@dfinity/principal':
+        specifier: ^2.2.0
+        version: 2.2.0
+    devDependencies:
+      '@types/node':
+        specifier: ^22.9.0
+        version: 22.10.2
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@22.10.2)(typescript@5.7.2)
+      typescript:
+        specifier: ^5.6.3
+        version: 5.7.2
+
+  packages/dex-integration:
+    dependencies:
+      '@alpaca-icp/token-adapter':
+        specifier: ^1.0.21
+        version: 1.0.21
+      '@dfinity/agent':
+        specifier: ^2.2.0
+        version: 2.2.0(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
+      '@dfinity/candid':
+        specifier: ^2.2.0
+        version: 2.2.0(@dfinity/principal@2.2.0)
+      '@dfinity/ledger-icrc':
+        specifier: ^2.7.0
+        version: 2.7.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0)
+      '@dfinity/principal':
+        specifier: ^2.2.0
+        version: 2.2.0
+      axios:
+        specifier: ^1.7.9
+        version: 1.7.9
+    devDependencies:
+      '@types/node':
+        specifier: ^22.9.0
+        version: 22.10.2
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@22.10.2)(typescript@5.7.2)
+      typescript:
+        specifier: ^5.6.3
         version: 5.7.2
 
   packages/eslint-config:
@@ -80,29 +139,29 @@ importers:
     dependencies:
       '@dfinity/agent':
         specifier: ^2.1.3
-        version: 2.1.3(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)
+        version: 2.2.0(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
       '@dfinity/ledger-icp':
         specifier: ^2.6.3
-        version: 2.6.3(@dfinity/agent@2.1.3)(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)(@dfinity/utils@2.7.0)
+        version: 2.6.5(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0)
       '@dfinity/ledger-icrc':
         specifier: ^2.6.3
-        version: 2.6.3(@dfinity/agent@2.1.3)(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)(@dfinity/utils@2.7.0)
+        version: 2.7.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0)
       '@dfinity/principal':
         specifier: ^2.1.3
-        version: 2.1.3
+        version: 2.2.0
       '@dfinity/utils':
         specifier: ^2.7.0
-        version: 2.7.0(@dfinity/agent@2.1.3)(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)
+        version: 2.8.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
       ic0:
         specifier: ^0.3.2
-        version: 0.3.2(@peculiar/webcrypto@1.5.0)
+        version: 0.3.2
     devDependencies:
       '@types/node':
         specifier: ^22.9.0
-        version: 22.9.3
+        version: 22.10.2
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@22.9.3)(typescript@5.7.2)
+        version: 10.9.2(@types/node@22.10.2)(typescript@5.7.2)
       typescript:
         specifier: ^5.6.3
         version: 5.7.2
@@ -186,7 +245,7 @@ importers:
         version: 6.0.2
       '@typescript-eslint/parser':
         specifier: ^7.1.0
-        version: 7.18.0(eslint@8.57.0)(typescript@5.5.4)
+        version: 7.18.0(eslint@8.57.0)(typescript@5.7.2)
       esbuild:
         specifier: ^0.20.1
         version: 0.20.2
@@ -207,9 +266,17 @@ importers:
         version: 6.3.4
       typescript:
         specifier: ^5.3.3
-        version: 5.5.4
+        version: 5.7.2
 
 packages:
+
+  /@alpaca-icp/token-adapter@1.0.21:
+    resolution: {integrity: sha512-9PoN5VFSQsBQDIXcTpp1qj3jz1OQx42GC5DPckwiFElX7SlPRGaC6XUObnxFK2aGUGx68ZXZLSw5I7lLKV3gyA==}
+    dependencies:
+      '@dfinity/agent': 2.2.0(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
+      '@dfinity/candid': 2.2.0(@dfinity/principal@2.2.0)
+      '@dfinity/principal': 2.2.0
+    dev: false
 
   /@ampproject/remapping@2.3.0:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -545,20 +612,20 @@ packages:
     dependencies:
       '@dfinity/candid': 0.19.3(@dfinity/principal@0.19.3)
       '@dfinity/principal': 0.19.3
-      '@noble/hashes': 1.5.0
+      '@noble/hashes': 1.6.0
       base64-arraybuffer: 0.2.0
       borc: 2.1.2
       simple-cbor: 0.4.1
     dev: false
 
-  /@dfinity/agent@2.1.3(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3):
-    resolution: {integrity: sha512-4XmqhFR3GQSUrmx7lMFx7DyHEhFkM6nz4O9FeYJ/WpkmPe8tulKaAfgWbWdTSCjbd8meCgKVHo+QYj+JHXagcw==}
+  /@dfinity/agent@2.2.0(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0):
+    resolution: {integrity: sha512-B0qpHf5vfnVNG3JZARC3Q9Cs2zG51/3LuTpCF4uVZ+4AgeRYHl4Erk/jmczdHNbSLIz1pe+F9seAYICovAnRIQ==}
     peerDependencies:
-      '@dfinity/candid': ^2.1.3
-      '@dfinity/principal': ^2.1.3
+      '@dfinity/candid': ^2.2.0
+      '@dfinity/principal': ^2.2.0
     dependencies:
-      '@dfinity/candid': 2.1.3(@dfinity/principal@2.1.3)
-      '@dfinity/principal': 2.1.3
+      '@dfinity/candid': 2.2.0(@dfinity/principal@2.2.0)
+      '@dfinity/principal': 2.2.0
       '@noble/curves': 1.7.0
       '@noble/hashes': 1.6.0
       base64-arraybuffer: 0.2.0
@@ -575,12 +642,12 @@ packages:
       '@dfinity/principal': 0.19.3
     dev: false
 
-  /@dfinity/candid@2.1.3(@dfinity/principal@2.1.3):
-    resolution: {integrity: sha512-Asn7AfydLhhk7E5z9oW+5UL6ne11gxFlYTxHuhrIc7FdqYlM5Flcq1Wfg9EzRa6Btdol3w58Bcph7Brwh1bcIQ==}
+  /@dfinity/candid@2.2.0(@dfinity/principal@2.2.0):
+    resolution: {integrity: sha512-6r21ow4kI/JaS6PocMVSHP49UDRG32EHrmFK9Uvg11yXulyTiR+PLGjabajvJjwmPQhjXiF8VzBIFY7aHOHiqQ==}
     peerDependencies:
-      '@dfinity/principal': ^2.1.3
+      '@dfinity/principal': ^2.2.0
     dependencies:
-      '@dfinity/principal': 2.1.3
+      '@dfinity/principal': 2.2.0
     dev: false
 
   /@dfinity/identity@0.19.3(@dfinity/agent@0.19.3)(@dfinity/principal@0.19.3)(@peculiar/webcrypto@1.5.0):
@@ -592,94 +659,92 @@ packages:
     dependencies:
       '@dfinity/agent': 0.19.3(@dfinity/candid@0.19.3)(@dfinity/principal@0.19.3)
       '@dfinity/principal': 0.19.3
-      '@noble/hashes': 1.5.0
+      '@noble/hashes': 1.6.0
       '@peculiar/webcrypto': 1.5.0
       borc: 2.1.2
       tweetnacl: 1.0.3
     dev: false
 
-  /@dfinity/identity@2.1.3(@dfinity/agent@2.1.3)(@dfinity/principal@2.1.3)(@peculiar/webcrypto@1.5.0):
-    resolution: {integrity: sha512-qII0V91S1YeIz5/XRHomwrUhTME+C3oqdTnb99tBitXA2Gq6LU2JaCLbKbN7ehhSyW6EjO4tySJxANz6hYENcQ==}
+  /@dfinity/identity@2.2.0(@dfinity/agent@2.2.0)(@dfinity/principal@2.2.0):
+    resolution: {integrity: sha512-4L/i6pDYrGnpgnITHJR1Tb5umawqytZ8BhCE7G1MzG2ftWJ0SO1QJxRDwp5Nuj/fNZumq+ILSc3o3ItzaUs1iQ==}
     peerDependencies:
-      '@dfinity/agent': ^2.1.3
-      '@dfinity/principal': ^2.1.3
-      '@peculiar/webcrypto': ^1.4.0
+      '@dfinity/agent': ^2.2.0
+      '@dfinity/principal': ^2.2.0
     dependencies:
-      '@dfinity/agent': 2.1.3(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)
-      '@dfinity/principal': 2.1.3
+      '@dfinity/agent': 2.2.0(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
+      '@dfinity/principal': 2.2.0
       '@noble/curves': 1.7.0
-      '@noble/hashes': 1.5.0
-      '@peculiar/webcrypto': 1.5.0
+      '@noble/hashes': 1.6.0
       borc: 2.1.2
     dev: false
 
-  /@dfinity/ledger-icp@2.6.3(@dfinity/agent@2.1.3)(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)(@dfinity/utils@2.7.0):
-    resolution: {integrity: sha512-fN8XsH6PJE3GiP+4hi3qGGu3QMaEMleLGJaRiIk0GPFAwWoJ3UH8VEakmnRP45u0L0/yWjj/WceIStr9i297Yg==}
+  /@dfinity/ledger-icp@2.6.5(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0):
+    resolution: {integrity: sha512-3Ya9LoCSeVUjqQ3+JBfzFf3XVRR4of2frko0ZimJ3MykTQCM8lEihLro6rr6a7tKeHSW2ceQaZwD5864UkrV2Q==}
     peerDependencies:
       '@dfinity/agent': ^2.0.0
       '@dfinity/candid': ^2.0.0
       '@dfinity/principal': ^2.0.0
-      '@dfinity/utils': ^2.7.0
+      '@dfinity/utils': ^2.8.0
     dependencies:
-      '@dfinity/agent': 2.1.3(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)
-      '@dfinity/candid': 2.1.3(@dfinity/principal@2.1.3)
-      '@dfinity/principal': 2.1.3
-      '@dfinity/utils': 2.7.0(@dfinity/agent@2.1.3)(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)
+      '@dfinity/agent': 2.2.0(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
+      '@dfinity/candid': 2.2.0(@dfinity/principal@2.2.0)
+      '@dfinity/principal': 2.2.0
+      '@dfinity/utils': 2.8.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
     dev: false
 
-  /@dfinity/ledger-icrc@2.6.3(@dfinity/agent@2.1.3)(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)(@dfinity/utils@2.7.0):
-    resolution: {integrity: sha512-nt379IojzyBiFiIhowr6sYbxVBF3HsJpM10sf4GlCUf1X++kk3DRbQExESD2XndiChVNCEOXxzmupDVSIbq7CQ==}
+  /@dfinity/ledger-icrc@2.7.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0):
+    resolution: {integrity: sha512-WDqCFHaPE55Vn2aYgZQ0/Jdyp56zqhQKUk2dgphraG8F7MU6rgCan4IwiA8ksqXX9XSsvuS3UMWWYV5FcrRVoQ==}
     peerDependencies:
       '@dfinity/agent': ^2.0.0
       '@dfinity/candid': ^2.0.0
       '@dfinity/principal': ^2.0.0
-      '@dfinity/utils': ^2.7.0
+      '@dfinity/utils': ^2.8.0
     dependencies:
-      '@dfinity/agent': 2.1.3(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)
-      '@dfinity/candid': 2.1.3(@dfinity/principal@2.1.3)
-      '@dfinity/principal': 2.1.3
-      '@dfinity/utils': 2.7.0(@dfinity/agent@2.1.3)(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)
+      '@dfinity/agent': 2.2.0(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
+      '@dfinity/candid': 2.2.0(@dfinity/principal@2.2.0)
+      '@dfinity/principal': 2.2.0
+      '@dfinity/utils': 2.8.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
     dev: false
 
   /@dfinity/principal@0.19.3:
     resolution: {integrity: sha512-+nixVvdGt7ECxRvLXDXsvU9q9sSPssBtDQ4bXa149SK6gcYcmZ6lfWIi3DJNqj3tGROxILVBsguel9tECappsA==}
     dependencies:
-      '@noble/hashes': 1.5.0
+      '@noble/hashes': 1.6.0
     dev: false
 
-  /@dfinity/principal@2.1.3:
-    resolution: {integrity: sha512-HtiAfZcs+ToPYFepVJdFlorIfPA56KzC6J97ZuH2lGNMTAfJA+NEBzLe476B4wVCAwZ0TiGJ27J4ks9O79DFEg==}
+  /@dfinity/principal@2.2.0:
+    resolution: {integrity: sha512-8Yxb/6B4BWvV64HJ7X8sbDjoBaEamAQgOZ0MK0I44lZiRHomAYeUJMrw3yBg9jI1T62lijLcl401FAXBOzciiQ==}
     dependencies:
       '@noble/hashes': 1.6.0
     dev: false
 
-  /@dfinity/sns@3.2.4(@dfinity/agent@2.1.3)(@dfinity/candid@2.1.3)(@dfinity/ledger-icrc@2.6.3)(@dfinity/principal@2.1.3)(@dfinity/utils@2.7.0):
-    resolution: {integrity: sha512-0Vq5+iHj2+7ZrNV7L0QUVYhRbFkCMIZH7pnt+COu9Oc9zinRDG7djvzxCL5hGzzMEmJo1SjwZ5DF2h/oezHCoA==}
+  /@dfinity/sns@3.2.6(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/ledger-icrc@2.7.0)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0):
+    resolution: {integrity: sha512-+0JVB+jmxGjfE0+JzmqzulQjiLsFTrP3OwqpfY99A5Wfe3UnwxzFDzlNrxEMQ+9+f1dkFXe3Hw//AEPbkgj5oQ==}
     peerDependencies:
       '@dfinity/agent': ^2.0.0
       '@dfinity/candid': ^2.0.0
-      '@dfinity/ledger-icrc': ^2.6.3
+      '@dfinity/ledger-icrc': ^2.7.0
       '@dfinity/principal': ^2.0.0
-      '@dfinity/utils': ^2.7.0
+      '@dfinity/utils': ^2.8.0
     dependencies:
-      '@dfinity/agent': 2.1.3(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)
-      '@dfinity/candid': 2.1.3(@dfinity/principal@2.1.3)
-      '@dfinity/ledger-icrc': 2.6.3(@dfinity/agent@2.1.3)(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)(@dfinity/utils@2.7.0)
-      '@dfinity/principal': 2.1.3
-      '@dfinity/utils': 2.7.0(@dfinity/agent@2.1.3)(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)
+      '@dfinity/agent': 2.2.0(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
+      '@dfinity/candid': 2.2.0(@dfinity/principal@2.2.0)
+      '@dfinity/ledger-icrc': 2.7.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0)
+      '@dfinity/principal': 2.2.0
+      '@dfinity/utils': 2.8.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
       '@noble/hashes': 1.6.0
     dev: false
 
-  /@dfinity/utils@2.7.0(@dfinity/agent@2.1.3)(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3):
-    resolution: {integrity: sha512-PPuzoFXwcjPJN0ax9GeKyJaMokq7igDDX8f4YnrBzmYgqhKPntLSg5oBZM/H54mkS/RvZ69+LlxEFSSzULoCKw==}
+  /@dfinity/utils@2.8.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0):
+    resolution: {integrity: sha512-Iqqc3svXMoWEB55S8kCy+y2bwdjwTDFfZ9zmNY9Lf5kKtJ+7smlo/BlB1hz4xfocTPVzhDjuovKV5AYur5PfRg==}
     peerDependencies:
       '@dfinity/agent': ^2.0.0
       '@dfinity/candid': ^2.0.0
       '@dfinity/principal': ^2.0.0
     dependencies:
-      '@dfinity/agent': 2.1.3(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)
-      '@dfinity/candid': 2.1.3(@dfinity/principal@2.1.3)
-      '@dfinity/principal': 2.1.3
+      '@dfinity/agent': 2.2.0(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
+      '@dfinity/candid': 2.2.0(@dfinity/principal@2.2.0)
+      '@dfinity/principal': 2.2.0
     dev: false
 
   /@esbuild/aix-ppc64@0.20.2:
@@ -967,7 +1032,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       chalk: 4.1.2
       jest-message-util: 29.7.0
       jest-util: 29.7.0
@@ -987,14 +1052,14 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       ci-info: 3.9.0
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 29.7.0
-      jest-config: 29.7.0(@types/node@22.9.3)
+      jest-config: 29.7.0(@types/node@22.10.2)
       jest-haste-map: 29.7.0
       jest-message-util: 29.7.0
       jest-regex-util: 29.6.3
@@ -1021,7 +1086,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       jest-mock: 29.7.0
 
   /@jest/expect-utils@29.7.0:
@@ -1045,7 +1110,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
@@ -1076,7 +1141,7 @@ packages:
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
       '@jridgewell/trace-mapping': 0.3.25
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
       exit: 0.1.2
@@ -1158,7 +1223,7 @@ packages:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       '@types/yargs': 17.0.33
       chalk: 4.1.2
 
@@ -1218,11 +1283,6 @@ packages:
     engines: {node: ^14.21.3 || >=16}
     dependencies:
       '@noble/hashes': 1.6.0
-    dev: false
-
-  /@noble/hashes@1.5.0:
-    resolution: {integrity: sha512-1j6kQFb7QRru7eKN3ZDvRcP13rugwdxZqCjbiAVZfIJwgj2A65UmT4TgARXGlXgnRkORLTDTrO19ZErt7+QXgA==}
-    engines: {node: ^14.21.3 || >=16}
     dev: false
 
   /@noble/hashes@1.6.0:
@@ -1344,7 +1404,7 @@ packages:
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
     dev: true
 
   /@types/compression@1.7.5:
@@ -1356,7 +1416,7 @@ packages:
   /@types/connect@3.4.38:
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
     dependencies:
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
     dev: true
 
   /@types/cookie-parser@1.4.7:
@@ -1372,13 +1432,13 @@ packages:
   /@types/cors@2.8.17:
     resolution: {integrity: sha512-8CGDvrBj1zgo2qE+oS3pOCyYNqCPryMWY2bGfwA0dcfopWGgxs+78df0Rs3rc9THP4JkOhLsAa+15VdpAqkcUA==}
     dependencies:
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
     dev: true
 
   /@types/express-serve-static-core@4.19.5:
     resolution: {integrity: sha512-y6W03tvrACO72aijJ5uF02FRq5cgDR9lUxddQ8vyF+GvmjJQqbzDcJngEjURc+ZsG31VI3hODNZJ2URj86pzmg==}
     dependencies:
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       '@types/qs': 6.9.15
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -1396,7 +1456,7 @@ packages:
   /@types/graceful-fs@4.1.9:
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}
     dependencies:
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
 
   /@types/hpp@0.2.6:
     resolution: {integrity: sha512-6gn1RuHA1/XFCVCqCkSV+AWy07YwtGg4re4SHhLMoiARTg9XlrbYMtVR+Uvws0VlERXzzcA+1UYvxEV6O+sgPg==}
@@ -1447,11 +1507,11 @@ packages:
   /@types/morgan@1.9.9:
     resolution: {integrity: sha512-iRYSDKVaC6FkGSpEVVIvrRGw0DfJMiQzIn3qr2G5B3C//AWkulhXgaBd7tS9/J79GWSYMTHGs7PfI5b3Y8m+RQ==}
     dependencies:
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
     dev: true
 
-  /@types/node@18.19.65:
-    resolution: {integrity: sha512-Ay5BZuO1UkTmVHzZJNvZKw/E+iB3GQABb6kijEz89w2JrfhNA+M/ebp18pfz9Gqe9ywhMC8AA8yC01lZq48J+Q==}
+  /@types/node@18.19.68:
+    resolution: {integrity: sha512-QGtpFH1vB99ZmTa63K4/FU8twThj4fuVSBkGddTp7uIL/cuoLWIUSL2RcOaigBhfR+hg5pgGkBnkoOxrTVBMKw==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -1461,10 +1521,10 @@ packages:
     dependencies:
       undici-types: 6.19.8
 
-  /@types/node@22.9.3:
-    resolution: {integrity: sha512-F3u1fs/fce3FFk+DAxbxc78DF8x0cY09RRL8GnXLmkJ1jvx3TtPdWoTT5/NiYfI5ASqXBmfqJi9dZ3gxMx4lzw==}
+  /@types/node@22.10.2:
+    resolution: {integrity: sha512-Xxr6BBRCAOQixvonOye19wnzyDiUtTeqldOOmj3CkeblonbccA12PFwlufvRdrpjXxqnmUaeiU5EOA+7s5diUQ==}
     dependencies:
-      undici-types: 6.19.8
+      undici-types: 6.20.0
 
   /@types/normalize-package-data@2.4.4:
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -1486,14 +1546,14 @@ packages:
     resolution: {integrity: sha512-x2EM6TJOybec7c52BX0ZspPodMsQUd5L6PRwOunVyVUhXiBSKf3AezDL8Dgvgt5o0UfKNfuA0eMLr2wLT4AiBA==}
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
     dev: true
 
   /@types/serve-static@1.15.7:
     resolution: {integrity: sha512-W8Ym+h8nhuRwaKPaDw34QUkwsGi6Rc4yYqvKFo5rm2FUEhCFbzVWrxXUxuKK8TASjWsysJY0nsmNCGhCOIsrOw==}
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       '@types/send': 0.17.4
     dev: true
 
@@ -1505,7 +1565,7 @@ packages:
     dependencies:
       '@types/cookiejar': 2.1.5
       '@types/methods': 1.1.4
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       form-data: 4.0.0
     dev: true
 
@@ -1618,6 +1678,27 @@ packages:
       debug: 4.3.6(supports-color@5.5.0)
       eslint: 8.57.0
       typescript: 5.5.4
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.7.2):
+    resolution: {integrity: sha512-4Z+L8I2OqhZV8qA132M4wNL30ypZGYOQVBfMgxDH/K5UX0PNqTu1c6za9ST5r9+tavvHiTWmBnKzpCJ/GlVFtg==}
+    engines: {node: ^18.18.0 || >=20.0.0}
+    peerDependencies:
+      eslint: ^8.56.0
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@typescript-eslint/scope-manager': 7.18.0
+      '@typescript-eslint/types': 7.18.0
+      '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.7.2)
+      '@typescript-eslint/visitor-keys': 7.18.0
+      debug: 4.3.6(supports-color@5.5.0)
+      eslint: 8.57.0
+      typescript: 5.7.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -1762,6 +1843,28 @@ packages:
       semver: 7.6.3
       ts-api-utils: 1.3.0(typescript@5.5.4)
       typescript: 5.5.4
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /@typescript-eslint/typescript-estree@7.18.0(typescript@5.7.2):
+    resolution: {integrity: sha512-aP1v/BSPnnyhMHts8cf1qQ6Q1IFwwRvAQGRvBFkWlo3/lH29OXA3Pts+c10nxRxIBrDnoMqzhgdwVe5f2D6OzA==}
+    engines: {node: ^18.18.0 || >=20.0.0}
+    peerDependencies:
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@typescript-eslint/types': 7.18.0
+      '@typescript-eslint/visitor-keys': 7.18.0
+      debug: 4.3.6(supports-color@5.5.0)
+      globby: 11.1.0
+      is-glob: 4.0.3
+      minimatch: 9.0.5
+      semver: 7.6.3
+      ts-api-utils: 1.3.0(typescript@5.7.2)
+      typescript: 5.7.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -2107,7 +2210,6 @@ packages:
 
   /asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
-    dev: true
 
   /available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
@@ -2120,6 +2222,16 @@ packages:
     resolution: {integrity: sha512-Mr2ZakwQ7XUAjp7pAwQWRhhK8mQQ6JAaNWSjmjxil0R8BPioMtQsTLOolGYkji1rcL++3dCqZA3zWqpT+9Ew6g==}
     engines: {node: '>=4'}
     dev: true
+
+  /axios@1.7.9:
+    resolution: {integrity: sha512-LhLcE7Hbiryz8oMDdDptSrWowmB4Bl6RCt6sIJKpRB4XtVf0iEgewX3au/pJqm+Py1kCASkb/FFKjxQaLtxJvw==}
+    dependencies:
+      follow-redirects: 1.15.9
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
 
   /axobject-query@3.1.1:
     resolution: {integrity: sha512-goKlv8DZrK9hUh975fnHzhNIO4jUnFCfv/dszV5VwUGDFjI6vQ2VwoyjYjYNEbBE8AH87TduWP5uyDR1D+Iteg==}
@@ -2439,7 +2551,6 @@ packages:
     engines: {node: '>= 0.8'}
     dependencies:
       delayed-stream: 1.0.0
-    dev: true
 
   /commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -2686,7 +2797,6 @@ packages:
   /delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
-    dev: true
 
   /delimit-stream@0.1.0:
     resolution: {integrity: sha512-a02fiQ7poS5CnjiJBAsjGLPp5EwVoGHNeu9sziBd9huppRfsAFIpv5zNLv0V1gbop53ilngAf5Kf331AwcoRBQ==}
@@ -3603,6 +3713,16 @@ packages:
     resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
     dev: true
 
+  /follow-redirects@1.15.9:
+    resolution: {integrity: sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: false
+
   /for-each@0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
     dependencies:
@@ -3616,7 +3736,6 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.35
-    dev: true
 
   /formidable@2.1.2:
     resolution: {integrity: sha512-CM3GuJ57US06mlpQ47YcunuUZ9jpm8Vx+P2CGt2j7HpgkKZO/DJYQ0Bobim8G6PFQmK5lOqOOdUXboU+h73A4g==}
@@ -3884,16 +4003,15 @@ packages:
       - encoding
     dev: false
 
-  /ic0@0.3.2(@peculiar/webcrypto@1.5.0):
+  /ic0@0.3.2:
     resolution: {integrity: sha512-A+XczHylZzyYtE27/ED66XpQohsUikFrpCSue/wEdAenIx/ZoIkY0tOKaf1mrLGcdHAmAyaN+Q0WW+XEc/b/1g==}
     dependencies:
-      '@dfinity/agent': 2.1.3(@dfinity/candid@2.1.3)(@dfinity/principal@2.1.3)
-      '@dfinity/candid': 2.1.3(@dfinity/principal@2.1.3)
-      '@dfinity/identity': 2.1.3(@dfinity/agent@2.1.3)(@dfinity/principal@2.1.3)(@peculiar/webcrypto@1.5.0)
-      '@dfinity/principal': 2.1.3
+      '@dfinity/agent': 2.2.0(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
+      '@dfinity/candid': 2.2.0(@dfinity/principal@2.2.0)
+      '@dfinity/identity': 2.2.0(@dfinity/agent@2.2.0)(@dfinity/principal@2.2.0)
+      '@dfinity/principal': 2.2.0
       cross-fetch: 3.1.8
     transitivePeerDependencies:
-      - '@peculiar/webcrypto'
       - encoding
     dev: false
 
@@ -4275,7 +4393,7 @@ packages:
       '@jest/expect': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.5.3
@@ -4361,7 +4479,7 @@ packages:
       - babel-plugin-macros
       - supports-color
 
-  /jest-config@29.7.0(@types/node@22.9.3):
+  /jest-config@29.7.0(@types/node@22.10.2):
     resolution: {integrity: sha512-uXbpfeQ7R6TZBqI3/TxCU4q4ttk3u0PJeC+E0zbfSoSjq6bJ7buBPxzQPL0ifrkY4DNu4JUdk0ImlBUYi840eQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     peerDependencies:
@@ -4376,7 +4494,7 @@ packages:
       '@babel/core': 7.25.2
       '@jest/test-sequencer': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       babel-jest: 29.7.0(@babel/core@7.25.2)
       chalk: 4.1.2
       ci-info: 3.9.0
@@ -4432,7 +4550,7 @@ packages:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
@@ -4446,7 +4564,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.3
       '@types/graceful-fs': 4.1.9
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -4493,7 +4611,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       jest-util: 29.7.0
 
   /jest-pnp-resolver@1.2.3(jest-resolve@29.7.0):
@@ -4543,7 +4661,7 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       chalk: 4.1.2
       emittery: 0.13.1
       graceful-fs: 4.2.11
@@ -4573,7 +4691,7 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       chalk: 4.1.2
       cjs-module-lexer: 1.3.1
       collect-v8-coverage: 1.0.2
@@ -4623,7 +4741,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -4646,7 +4764,7 @@ packages:
     dependencies:
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
@@ -4657,7 +4775,7 @@ packages:
     resolution: {integrity: sha512-eIz2msL/EzL9UFTFFx7jBTkeZfku0yUAyZZZmJ93H2TYEiroIx2PQjEXcwYtYl8zXCxb+PAmA2hLIt/6ZEkPHw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -5286,6 +5404,10 @@ packages:
     dependencies:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
+    dev: false
+
+  /proxy-from-env@1.1.0:
+    resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
     dev: false
 
   /pstree.remy@1.1.8:
@@ -5936,6 +6058,15 @@ packages:
       typescript: 5.5.4
     dev: true
 
+  /ts-api-utils@1.3.0(typescript@5.7.2):
+    resolution: {integrity: sha512-UQMIo7pb8WRomKR1/+MFVLTroIvDVtMX3K6OUir8ynLyzB8Jeriont2bTAtmNPa1ekAgN7YPDyf6V+ygrdU+eQ==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      typescript: '>=4.2.0'
+    dependencies:
+      typescript: 5.7.2
+    dev: true
+
   /ts-jest@29.2.4(@babel/core@7.25.2)(jest@29.7.0)(typescript@5.7.2):
     resolution: {integrity: sha512-3d6tgDyhCI29HlpwIq87sNuI+3Q6GLTTCeYRHCs7vDz+/3GCMwEtV9jezLyl4ZtnBgx00I7hm8PCP8cTksMGrw==}
     engines: {node: ^14.15.0 || ^16.10.0 || ^18.0.0 || >=20.0.0}
@@ -5974,7 +6105,7 @@ packages:
       yargs-parser: 21.1.1
     dev: false
 
-  /ts-node@10.9.2(@types/node@18.19.65)(typescript@5.7.2):
+  /ts-node@10.9.2(@types/node@18.19.68)(typescript@5.7.2):
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
     hasBin: true
     peerDependencies:
@@ -5993,7 +6124,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 18.19.65
+      '@types/node': 18.19.68
       acorn: 8.12.1
       acorn-walk: 8.3.4
       arg: 4.1.3
@@ -6005,7 +6136,7 @@ packages:
       yn: 3.1.1
     dev: true
 
-  /ts-node@10.9.2(@types/node@22.9.3)(typescript@5.7.2):
+  /ts-node@10.9.2(@types/node@22.10.2)(typescript@5.7.2):
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
     hasBin: true
     peerDependencies:
@@ -6024,7 +6155,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 22.9.3
+      '@types/node': 22.10.2
       acorn: 8.12.1
       acorn-walk: 8.3.4
       arg: 4.1.3
@@ -6243,6 +6374,9 @@ packages:
 
   /undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+
+  /undici-types@6.20.0:
+    resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
 
   /unpipe@1.0.0:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}

@@ -1,0 +1,33 @@
+{
+  "name": "@icptokens/dex-integration",
+  "version": "0.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:examples": "tsc --project examples/tsconfig.examples.json",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@alpaca-icp/token-adapter": "^1.0.21",
+    "@dfinity/agent": "^2.2.0",
+    "@dfinity/candid": "^2.2.0",
+    "@dfinity/ledger-icrc": "^2.7.0",
+    "@dfinity/principal": "^2.2.0",
+    "axios": "^1.7.9"
+  },
+  "files": [
+    "dist/",
+    "src/"
+  ]
+}
