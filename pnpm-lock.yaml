@@ -34,16 +34,16 @@ importers:
         version: 2.8.0(@dfinity/agent@2.2.0(@dfinity/candid@2.2.0(@dfinity/principal@2.2.0))(@dfinity/principal@2.2.0))(@dfinity/candid@2.2.0(@dfinity/principal@2.2.0))(@dfinity/principal@2.2.0)
     devDependencies:
       '@icptokens/bob-integration':
-        specifier: file:./../packages/bob-integration
+        specifier: workspace:*
         version: link:../packages/bob-integration
       '@icptokens/dex-integration':
-        specifier: file:./../packages/dex-integration
+        specifier: workspace:*
         version: link:../packages/dex-integration
       '@icptokens/nns-integration':
-        specifier: file:./../packages/nns-integration
+        specifier: workspace:*
         version: link:../packages/nns-integration
       '@icptokens/token-toolkit':
-        specifier: file:./../packages/token-toolkit
+        specifier: workspace:*
         version: link:../packages/token-toolkit
       '@types/node':
         specifier: ^18.11.0
@@ -256,6 +256,9 @@ importers:
         specifier: ^6.6.2
         version: 6.6.2
     devDependencies:
+      '@icptokens/token-toolkit':
+        specifier: workspace:*
+        version: link:../../packages/token-toolkit
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config

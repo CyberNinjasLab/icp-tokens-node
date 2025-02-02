@@ -1,4 +1,11 @@
 import { Sequelize } from 'sequelize';
+
+import TransactionService from './../services/transaction.service';
+
+import Account from './../models/account.model';
+import Transaction from './../models/transaction.model';
+import AccountBalance from '../models/account-balance.model';
+
 import { Config } from './../config';
 
 const config = Config.getInstance();
@@ -31,6 +38,17 @@ class DatabaseClient {
     await this.sequelize.authenticate()
       .then(() => logger.info(`[${this.logContext}] Database connected`))
       .catch((err) => logger.error(`Database connection error: ${err.message}`, `${this.logContext} -> init()`));
+
+      Account.initialize(this.sequelize);
+      AccountBalance.initialize(this.sequelize);
+      Transaction.initialize(this.sequelize);
+
+      await this.sequelize.sync({ alter: true });
+
+      // TO DO: Research
+      // const transactionService = new TransactionService();
+
+      // await transactionService.fetchAndStoreTransactions();
   }
 
   public async close(): Promise<void> {

@@ -51,7 +51,7 @@ export class Ledger {
      * 
      * @param callback - Function to call for each batch of transactions.
      */
-    async iterateTransactions(callback: (batch: FormattedTransaction[]) => boolean): Promise<void> {
+    async iterateTransactions(callback: (batch: FormattedTransaction[]) => boolean | Promise<boolean>): Promise<void> {
         const totalTransactions = await this.getTotalTransactions();
         let startSearchIndex = totalTransactions;
         let archivePrincipal = '';

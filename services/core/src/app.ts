@@ -8,7 +8,9 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
 
-import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS, Config } from './config';
+import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from './config';
+
+import db from './data-layer/client';
 
 import logger from './utils/logger.util';
 
@@ -41,6 +43,8 @@ export class App {
         \n =================================`
       );
     });
+
+    const database = db;
 
   }
 
