@@ -45,10 +45,9 @@ class DatabaseClient {
 
       await this.sequelize.sync({ alter: true });
 
-      // TO DO: Research
-      // const transactionService = new TransactionService();
+      const transactionService = new TransactionService();
 
-      // await transactionService.fetchAndStoreTransactions();
+      await transactionService.getNewTransactions();
   }
 
   public async close(): Promise<void> {
