@@ -40,7 +40,7 @@ class Account extends Model<IAccount, AccountCreationAttributes> implements IAcc
         sequelize,
         modelName: "Account",
         tableName: "accounts",
-        timestamps: true, // Enables createdAt & updatedAt
+        timestamps: true,
       }
     );
   }

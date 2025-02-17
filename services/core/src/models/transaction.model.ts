@@ -23,8 +23,17 @@ class Transaction extends Model<ITransaction> {
           type: DataTypes.ENUM("transfer", "burn", "mint"),
           allowNull: false,
         },
-        from_account: DataTypes.STRING,
-        to_account: DataTypes.STRING,
+        from_account: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          // Optionally add a reference if desired (note: foreign keys on hypertables may not be enforced)
+          references: { model: "accounts", key: "account_identifier" }
+        },
+        to_account: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          references: { model: "accounts", key: "account_identifier" }
+        },
         value: {
           type: DataTypes.BIGINT,
           allowNull: false,
@@ -43,9 +52,13 @@ class Transaction extends Model<ITransaction> {
         timestamps: false,
         indexes: [
           {
-            fields: [ "timestamp" ]
-          }
-        ]
+            fields: ["timestamp"],
+          },
+          {
+            unique: true,
+            fields: ["id", "timestamp"],
+          },
+        ],
       }
     );
   }

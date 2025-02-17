@@ -1,16 +1,14 @@
 import { Model, DataTypes, Sequelize } from "sequelize";
 
-// Define AccountBalance attributes
 export interface IAccountBalance {
   time: Date;
-  account_id: number;
+  account_identifier: string;  // Matches Account.account_identifier
   balance: bigint;
 }
 
-// Define AccountBalance model class
 class AccountBalance extends Model<IAccountBalance> implements IAccountBalance {
   public time!: Date;
-  public account_id!: number;
+  public account_identifier!: string;
   public balance!: bigint;
 
   static initialize(sequelize: Sequelize) {
@@ -21,12 +19,12 @@ class AccountBalance extends Model<IAccountBalance> implements IAccountBalance {
           allowNull: false,
           primaryKey: true,
         },
-        account_id: {
-          type: DataTypes.INTEGER,
+        account_identifier: {
+          type: DataTypes.STRING,
           allowNull: false,
           references: {
             model: "accounts",
-            key: "id",
+            key: "account_identifier",
           },
         },
         balance: {

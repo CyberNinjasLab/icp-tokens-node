@@ -4,11 +4,16 @@ import TransactionDataLayer from "./../data-layer/transaction.data-layer";
 
 import PerformanceUtil from "./../utils/performance.util";
 
-import { ITransaction } from "./../models/transaction.model";
+import Transaction, { ITransaction } from "./../models/transaction.model";
+import { col, fn, literal } from "sequelize";
 
 const performanceUtil = PerformanceUtil.getInstance();
 
 class TransactionService {
+
+  constructor() {
+
+  }
 
   private logContext = `Transaction Service`;
 
@@ -111,6 +116,27 @@ class TransactionService {
     const totalTime = performanceUtil.getPerformance(startTime);
     logger.info(`✅ Finished fetching old transactions. Time: ${totalTime}`);
   }
+
+  public async getDailyReceived(accountIdentifier: string) {
+    const results = await Transaction.findAll({
+      attributes: [
+        [fn('date_trunc', 'day', col('timestamp')), 'day'],
+        [fn('SUM', col('value')), 'total_received']
+      ],
+      where: {
+        to_account: accountIdentifier,
+        type: 'transfer' // You can extend this for other types if needed.
+      },
+      group: [fn('date_trunc', 'day', col('timestamp'))],
+      order: [[literal('day'), 'ASC']]
+    });
+
+    return results.map((row: any) => ({
+      day: row.getDataValue('day'),
+      total_received: parseInt(row.getDataValue('total_received'), 10)
+    }));
+  }
+
 
 }
 
