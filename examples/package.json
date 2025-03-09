@@ -10,7 +10,12 @@
     "icpswap:test": "node --loader ts-node/esm src/dex/icpswap.ts",
     "kongswap:test": "node --loader ts-node/esm src/dex/kongswap.ts",
     "sonic:test": "node --loader ts-node/esm src/dex/sonic.ts",
-    "bob:test": "node --loader ts-node/esm src/bob/launches.ts"
+    "bob:test": "node --loader ts-node/esm src/bob/launches.ts",
+    "test:sns-neurons": "node --loader ts-node/esm src/sns/neurons.ts",
+    "test:sns-treasury": "node --loader ts-node/esm src/sns/treasury.ts",
+    "test:icrc-transactions": "node --loader ts-node/esm src/ledger/ICRC-fetch-transactions.ts",
+    "test:icp-transactions": "node --loader ts-node/esm src/ledger/ICP-fetch-transactions.ts",
+    "test:token-metadata": "node --loader ts-node/esm src/ledger/Token-metadata.ts"
   },
   "dependencies": {
     "@dfinity/agent": "^2.1.3",
@@ -23,8 +28,9 @@
     "@types/node": "^18.11.0",
     "ts-node": "^10.9.0",
     "typescript": "^5.0.0",
-    "@icptokens/nns-integration": "^0.0.0",
-    "@icptokens/dex-integration": "^0.0.0",
-    "@icptokens/bob-integration": "^0.0.0"
+    "@icptokens/nns-integration": "file:./../packages/nns-integration",
+    "@icptokens/dex-integration": "file:./../packages/dex-integration",
+    "@icptokens/bob-integration": "file:./../packages/bob-integration",
+    "@icptokens/token-toolkit": "file:./../packages/token-toolkit"
   }
 }

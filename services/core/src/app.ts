@@ -8,7 +8,7 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
 
-import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from './config';
+import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS, Config } from './config';
 
 import logger from './utils/logger.util';
 
@@ -32,14 +32,16 @@ export class App {
     this.app.use(new ErrorMiddleware().init);
   }
 
-  public listen() {
-    this.app.listen(this.port, () => {
+  public async listen() {
+    this.app.listen(this.port, async () => {
+
       logger.info(`
         \n ======= ENV: ${this.env} ======= 
         \n 🚀 App listening on the port ${this.port} 
         \n =================================`
       );
     });
+
   }
 
   public getServer() {
