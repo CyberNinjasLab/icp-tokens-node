@@ -14,6 +14,8 @@ services:
       tags:
         - ghcr.io/cyberninjaslab/icp-tokens-node/core
     restart: always
+    depends_on:
+      - timescaledb
     ports:
       - 3000:3000
     networks:
@@ -21,20 +23,21 @@ services:
     stop_grace_period: 1s
 
 
-  # postgres:
-  #   container_name: postgres
-  #   image: postgres:17
-  #   restart: always
-  #   environment:
-  #     POSTGRES_USER: $POSTGRES_USER
-  #     POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-  #     POSTGRES_DB: $POSTGRES_DB
-  #   ports:
-  #     - 5432:5432
-  #   networks:
-  #     - app_network
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
+  timescaledb:
+    image: timescale/timescaledb:latest-pg15
+    container_name: timescaledb
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - timescale-data:/var/lib/postgresql/data
+      - ./db/db-init:/docker-entrypoint-initdb.d/
+
+volumes:
+  timescale-data: {}
 
 networks:
   app_network:
