@@ -90,6 +90,50 @@ class TransactionCollector {
     return null;
   }
 
+    /**
+   * Get all transactions until a specific transaction ID is found
+   * Hint: Traverses pools until id is found or limit is reached
+   * @param stopTransactionId The transaction ID where to stop collecting
+   * @param maxTransactions Maximum number of transactions to collect (safety limit)
+   * @returns Array of transactions from newest to oldest up to the specified ID
+   */
+  async findTransactionInPools(
+    stopTransactionId: string, 
+    maxTransactions: number = 1000
+  ): Promise<any[]> {
+    const collectedTransactions: any[] = [];
+    
+    for (const pool of this.pools) {
+      const poolInfo: PoolInfo = pool.getPoolInfo();
+      const poolId: string = poolInfo.pool;
+      
+      console.log(`Checking transactions in pool: ${poolInfo.name} (${poolId})`);
+      
+      const transactions = await this.fetchTransactionsUntilId(
+        poolId, 
+        stopTransactionId, 
+        maxTransactions - collectedTransactions.length
+      );
+
+      if (transactions.length === 0) {
+        console.log(`No transactions found in pool: ${poolInfo.name} (${poolId})`);
+        continue;
+      }
+      collectedTransactions.push(...transactions);
+      if (collectedTransactions.some(tx => tx.id === stopTransactionId)) {
+        console.log(`Found target transaction in pool: ${poolInfo.name} (${poolId})`);
+        break;
+      }
+      if (collectedTransactions.length >= maxTransactions) {
+        console.log(`Reached maximum transaction limit of ${maxTransactions}`);
+        break;
+      }
+      
+    }
+    
+    return collectedTransactions;
+  }
+
   /**
    * Fetch transactions in batches from a specific pool until a target transaction ID is found
    * 
@@ -125,10 +169,10 @@ class TransactionCollector {
         collectedTransactions.push(tx);
         
         // Check if this is the stop transaction
-        if (tx.id === stopTransactionId) {
+        if (tx.id === stopTransactionId || collectedTransactions.length >= maxTransactions) {
           console.log(`Found stop transaction with ID: ${stopTransactionId}`);
           foundStopTransaction = true;
-          break;
+          return collectedTransactions;
         }
       }
       
@@ -143,37 +187,6 @@ class TransactionCollector {
     }
     
     return collectedTransactions;
-  }
-
-  /**
-   * Get all transactions until a specific transaction ID is found
-   * 
-   * @param stopTransactionId The transaction ID where to stop collecting
-   * @param maxTransactions Maximum number of transactions to collect (safety limit)
-   * @returns Array of transactions from newest to oldest up to the specified ID
-   */
-  async findPoolGetTransactions(stopTransactionId: string, maxTransactions: number = 1000): Promise<any[]> {
-    try {
-      // Find a pool with transactions
-      const activePoolData = await this.findActivePool();
-      
-      if (!activePoolData) {
-        console.log("Could not find any pool with transactions");
-        return [];
-      }
-      
-      const { poolId, poolInfo } = activePoolData;
-      console.log(`Collecting transactions from pool: ${poolInfo.name} (${poolId})`);
-      
-      // Collect transactions until reaching the target ID
-      const transactions = await this.fetchTransactionsUntilId(poolId, stopTransactionId, maxTransactions);
-      console.log(`Collected ${transactions.length} transactions in total`);
-      
-      return transactions;
-    } catch (error) {
-      console.error("Error collecting transactions:", error);
-      throw error;
-    }
   }
 
   /**
@@ -239,7 +252,9 @@ function printTransactions(transactions: any[]): void {
 async function main() {
   try {
     // Transaction ID to search for
-    const targetTransactionId = "qslyi-dyaaa-aaaag-qngza-cai.lqt4r-dqaaa-aaaag-qdjpq-cai.5";
+    // const targetTransactionId = "qslyi-dyaaa-aaaag-qngza-cai.lqt4r-dqaaa-aaaag-qdjpq-cai.5";
+    // const targetTransactionId = "qslyi-dyaaa-aaaag-qngza-cai.heq6n-fyaaa-aaaag-qkcpq-cai.247";
+    const targetTransactionId = "qslyi-dyaaa-aaaag-qngza-cai.heq6n-fyaaa-aaaag-qkcpq-cai.10";
     const maxTransactionsToCollect = 100;
     
     console.log(`Starting transaction collection until ID: ${targetTransactionId}`);
@@ -249,9 +264,14 @@ async function main() {
     await collector.initialize();
     
     // Collect transactions
-    const transactions = await collector.findPoolGetTransactions(targetTransactionId, maxTransactionsToCollect);
+    const transactions = await collector.findTransactionInPools(targetTransactionId, maxTransactionsToCollect);
     printTransactions(transactions);
     
+    // // Get the latest transaction
+    // const latestTransaction = await collector.getLatestTransaction();
+    // if (latestTransaction) {
+    //   console.log(`Latest transaction ID: ${latestTransaction.id}, Date: ${new Date(Number(latestTransaction.ts) * 1000).toISOString()}`);
+    // }
 
   } catch (error) {
     console.error("Error in main execution:", error);
