@@ -16,11 +16,12 @@ import {
 } from "../../types";
 import { kongBase } from "../../types/actors";
 import { CanisterWrapper } from "../../types/CanisterWrapper";
-import { parseResultResponse, validateCaller } from "../../utils";
+import { parseResultResponse } from "@icptokens/onchain-utils";
 import { PoolInfo } from "../../types/KongSwap";
 import { SwapAmountsReply, TxId } from "../../types/actors/kongswap/kongBase";
 import { Token as TokenAdapter, TokenStandard } from "@alpaca-icp/token-adapter";
 import { Principal } from "@dfinity/principal";
+import { validateCaller } from "@icptokens/onchain-utils";
 
 type KongSwapActor = kongBase._SERVICE;
 

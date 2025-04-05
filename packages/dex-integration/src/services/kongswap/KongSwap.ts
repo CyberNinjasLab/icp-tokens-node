@@ -14,7 +14,7 @@ import {
 } from "../../types";
 import { kongData } from "../../types/actors";
 import { CanisterWrapper } from "../../types/CanisterWrapper";
-import { parseResultResponse } from "../../utils";
+import { parseResultResponse } from "@icptokens/onchain-utils";
 import { KongSwapPool } from "./KongSwapPool";
 import { PoolInfo } from "../../types/KongSwap";
 import { actors } from "../../types";

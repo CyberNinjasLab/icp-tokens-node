@@ -1,4 +1,3 @@
-import { safeParseJSON } from ".";
 import { AddLiquidityTransaction, ClaimTransaction, icswap, RemoveLiquidityTransaction, SwapTransaction, Transaction, TransactionInfo, TransactionSource, TransactionType } from "../types";
 
 export const parseICPSwapTransaction = (

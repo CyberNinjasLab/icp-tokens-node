@@ -20,11 +20,12 @@
   },
   "dependencies": {
     "@alpaca-icp/token-adapter": "^1.0.21",
-    "@dfinity/agent": "^2.2.0",
-    "@dfinity/candid": "^2.2.0",
+    "@dfinity/agent": "^2.4.0",
+    "@dfinity/candid": "^2.4.0",
     "@dfinity/ledger-icrc": "^2.7.0",
-    "@dfinity/principal": "^2.2.0",
-    "axios": "^1.7.9"
+    "@dfinity/principal": "^2.4.0",
+    "axios": "^1.7.9",
+    "@icptokens/onchain-utils": "workspace:*"
   },
   "files": [
     "dist/",
