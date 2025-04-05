@@ -1,0 +1,38 @@
+{
+    "name": "@icptokens/db",
+    "version": "0.0.0",
+    "description": "",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+      "build": "tsc",
+      "migrate": "knex --knexfile src/knexfile.ts migrate:latest",
+      "rollback": "knex --knexfile src/knexfile.ts migrate:rollback",
+      "seed": "knex --knexfile src/knexfile.ts seed:run",
+      "db:reset": "knex --knexfile src/knexfile.ts migrate:rollback --all && knex --knexfile src/knexfile.ts migrate:latest && knex --knexfile src/knexfile.ts seed:run"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+      "typescript": "^5.3.3",
+      "@types/node": "^20.8.10",
+      "@types/pg": "^8.11.11",
+      "ts-node": "^10.9.2",
+      "@dfinity/agent": "^2.4.0",
+      "@dfinity/principal": "^2.4.0",
+      "@icptokens/dex-integration": "workspace:*",
+      "@icptokens/nns-integration": "workspace:*",
+      "@icptokens/token-toolkit": "workspace:*",
+      "@icptokens/constants": "workspace:*"
+    },
+    "dependencies": {
+      "knex": "^2.5.1",
+      "pg": "^8.11.0",
+      "dotenv": "^16.4.7"
+    },
+    "files": [
+      "dist/",
+      "src/"
+    ]
+  }
