@@ -53,9 +53,8 @@ export class ICRC1Token implements IToken {
   async symbol(): Promise<string> {
     return await this.actor.icrc1_symbol();
   }
-  async totalSupply(): Promise<number> {
-    const totalSupplyBigInt = await this.actor.icrc1_total_supply();
-    return Number(totalSupplyBigInt) / this.decimals;
+  async totalSupply(): Promise<bigint> {
+    return await this.actor.icrc1_total_supply();
   }
   async getFee(): Promise<bigint> {
     return await this.actor.icrc1_fee();
@@ -67,11 +66,6 @@ export class ICRC1Token implements IToken {
   async getBurnedAmmount(): Promise<number> {
     const burnedDeadWallet = await this.getBurnedAmountInDeadWallet();
     return burnedDeadWallet;
-  }
-  async holdPercentage(address: string): Promise<number> {
-    const totalSupply = await this.totalSupply();
-    const balance = await this.balanceOf(address);
-    return balance / totalSupply;
   }
 
   async getMetadata(): Promise<Array<[string, MetadataValue]>> {

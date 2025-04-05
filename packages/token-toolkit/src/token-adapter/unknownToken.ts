@@ -26,7 +26,7 @@ export class UnknownToken implements IToken {
   async symbol(): Promise<string> {
     return await this.ic.call("symbol");
   }
-  async totalSupply(): Promise<number> {
+  async totalSupply(): Promise<bigint> {
     return this.ic.call("totalSupply");
   }
   async getFee(): Promise<bigint> {

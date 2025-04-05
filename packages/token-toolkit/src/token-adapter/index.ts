@@ -115,7 +115,7 @@ export class Token {
     return this.token?.symbol();
   }
 
-  public async totalSupply(): Promise<number|undefined> {
+  public async totalSupply(): Promise<bigint|undefined> {
     this.ensureInitialized();
     return this.token?.totalSupply();
   }

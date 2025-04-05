@@ -14,7 +14,7 @@ export interface IToken {
   ): Promise<number> | undefined;
   name(): Promise<string>;
   symbol(): Promise<string>;
-  totalSupply(): Promise<number>;
+  totalSupply(): Promise<bigint>;
   getFee(): Promise<bigint>;
   getMetadata(): Promise<any>;
   getLogo(): Promise<string>;
