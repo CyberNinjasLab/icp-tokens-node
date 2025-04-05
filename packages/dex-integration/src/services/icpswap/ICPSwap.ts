@@ -1,5 +1,5 @@
 import { Actor, Agent } from "@dfinity/agent";
-import { AddLiquidityTransaction, GetPoolInput, icswap, IDexWithPoolTransactions, IPool, ListPoolInput, RemoveLiquidityTransaction, SwapTransaction, Transaction, TransactionInfo, TransactionSource, TransactionType } from "../../types";
+import { GetPoolInput, icswap, IDexWithStorageCanisterTransactions, IPool, ListPoolInput, Transaction } from "../../types";
 import { CanisterWrapper } from "../../types/CanisterWrapper";
 import { icsNodeIndex, icsBaseIndex, icsBaseStorage } from "../../types/actors";
 import { actors } from "../../types";
@@ -7,13 +7,14 @@ import { ICPSwapPool } from "./ICPSwapPool";
 import { ICPSWAP_BASE_INDEX_CANISTER, ICPSWAP_NODE_INDEX_CANISTER } from "../../config";
 import { RecordPage } from "../../types/actors/icpswap/icpswapBaseStorage";
 import { BaseStorageActor } from "../../types/ICPSwap";
+import { parseICPSwapTransaction } from "../../utils";
 
 type NodeIndexActor = icsNodeIndex._SERVICE;
 type BaseIndexActor = icsBaseIndex._SERVICE;
 
 type PublicTokenOverview = actors.icsNodeIndex.PublicTokenOverview;
 
-export class ICPSwap extends CanisterWrapper implements IDexWithPoolTransactions {
+export class ICPSwap extends CanisterWrapper implements IDexWithStorageCanisterTransactions {
     private nodeIndexActor: NodeIndexActor;
     private baseIndexActor: BaseIndexActor;
     private currentStorageActor: BaseStorageActor | null = null;
@@ -32,84 +33,43 @@ export class ICPSwap extends CanisterWrapper implements IDexWithPoolTransactions
         });
     }
 
-    /**
-     * Fetches transactions for a specific pool using the currently set base storage actor, 
-     * with the option to start fetching from a given offset.
-     * This method will throw an error if no base storage actor is currently set.
-     * 
-     * OFFICIAL DOCS: https://github.com/ICPSwap-Labs/docs/blob/main/03.SwapInformation/05.Fetching_Transaction.md
-     *
-     * @param poolId - The identifier of the pool for which to fetch transactions.
-     * @param startOffset - The offset from which to start fetching transactions. Defaults to 0.
-     * @returns A promise that resolves to an array of transactions for the specified pool, 
-     *          starting from the given offset.
-     * @throws Error if no current storage actor is set or if there's an issue fetching transactions.
-     */
-    async getTransactionsByPool(poolId: string, startOffset: bigint = 0n, limit: bigint = 100n): Promise<Transaction[]> {
+    async getTransactionsByPool(poolId: string, startOffset: bigint, limit: bigint): Promise<Transaction[]> {
         if (!this.currentStorageActor) {
             throw new Error("No base storage actor is currently set. Please initialize first.");
         }
-    
-        // const allTransactions: Transaction[] = []; // TODO: Converter
+        
+        const result: RecordPage = await this.currentStorageActor.getByPool(startOffset, limit, poolId);
         const transactions: Transaction[] = [];
-        let offset = startOffset;
-    
-        while (true) {
-            const page: RecordPage = await this.currentStorageActor.getByPool(offset, limit, poolId);
-            if (!page.content || page.content.length === 0) break;
+        const storageCanisterId = this.currentStorageActor.canister_id;
 
-            const storageCanisterId = this.currentStorageActor.canister_id;
+        transactions.push(...result.content
+            .map((tx, index) => parseICPSwapTransaction(tx, storageCanisterId, startOffset, index))
+            .filter(tx => tx !== null) as Transaction[]);
 
-            transactions.push(...page.content.map((tx, index) => {
-                const baseInfo: TransactionInfo = {
-                    from: tx.from,
-                    to: tx.to,
-                    ts: tx.timestamp,
-                    id: `${storageCanisterId}.${poolId}.${offset + BigInt(index)}`,
-                    source: TransactionSource.ICPSWAP,
-                    raw: tx as unknown as icswap.Transaction, // Type assertion since the raw types might differ
-                    type: TransactionType.SWAP // Default type if no match
-                };
-    
-                if ('swap' in tx.action) {
-                    return {
-                        ...baseInfo,
-                        type: TransactionType.SWAP,
-                        tokenIn: tx.token0Symbol,
-                        amountIn: BigInt(Math.round(tx.amountToken0 * Math.pow(10, tx.token0Decimals))), // Convert to bigint
-                        tokenOut: tx.token1Symbol,
-                        amountOut: BigInt(Math.round(tx.amountToken1 * Math.pow(10, tx.token1Decimals))), // Convert to bigint
-                        slippage: 0 // No slippage info provided; you might want to calculate or set this based on your logic
-                    } as SwapTransaction;
-                } else if ('addLiquidity' in tx.action || 'increaseLiquidity' in tx.action) {
-                    return {
-                        ...baseInfo,
-                        type: TransactionType.ADD_LIQUIDITY,
-                        token1: tx.token0Symbol,
-                        token2: tx.token1Symbol,
-                        amount1: BigInt(Math.round(tx.amountToken0 * Math.pow(10, tx.token0Decimals))), // Convert to bigint
-                        amount2: BigInt(Math.round(tx.amountToken1 * Math.pow(10, tx.token1Decimals)))  // Convert to bigint
-                    } as AddLiquidityTransaction;
-                } else if ('decreaseLiquidity' in tx.action) {
-                    return {
-                        ...baseInfo,
-                        type: TransactionType.DECREASE_LIQUIDITY,
-                        token1: tx.token0Symbol,
-                        token2: tx.token1Symbol,
-                        amount1: BigInt(Math.round(tx.amountToken0 * Math.pow(10, tx.token0Decimals))), // Convert to bigint
-                        amount2: BigInt(Math.round(tx.amountToken1 * Math.pow(10, tx.token1Decimals)))  // Convert to bigint
-                    } as RemoveLiquidityTransaction;
-                } else {
-                    // If no specific type matches, we'll treat it as an error or unknown type
-                    // console.warn('Unknown transaction type:', tx.action);
-                    return null; // Filter out in the next step
-                }
-            }).filter(tx => tx !== null) as Transaction[]);
-    
-            if (page.content.length < Number(limit) || offset + BigInt(page.content.length) >= page.totalElements) break;
-            offset = page.offset + BigInt(page.content.length); // Update offset with the next starting point
+        return transactions;
+    }
+
+    /**
+     * Fetches transactions from the current storage canister.
+     * 
+     * OFFICIAL DOCS: https://github.com/ICPSwap-Labs/docs/blob/main/03.SwapInformation/05.Fetching_Transaction.md
+     * 
+     * @param startOffset - The offset from which to start fetching transactions.
+     * @param limit - The maximum number of transactions to fetch.
+     */
+    async getStorageCanisterTransactions(startOffset: bigint, limit: bigint): Promise<Transaction[]> {
+        if (!this.currentStorageActor) {
+            throw new Error("No base storage actor is currently set. Please initialize first.");
         }
-    
+        
+        const result: RecordPage = await this.currentStorageActor.getTx(startOffset, limit);
+        const transactions: Transaction[] = [];
+        const storageCanisterId = this.currentStorageActor.canister_id;
+
+        transactions.push(...result.content
+            .map((tx, index) => parseICPSwapTransaction(tx, storageCanisterId, startOffset, index))
+            .filter(tx => tx !== null) as Transaction[]);
+
         return transactions;
     }
 

@@ -28,9 +28,9 @@
     "@types/node": "^18.11.0",
     "ts-node": "^10.9.0",
     "typescript": "^5.0.0",
-    "@icptokens/nns-integration": "file:./../packages/nns-integration",
-    "@icptokens/dex-integration": "file:./../packages/dex-integration",
-    "@icptokens/bob-integration": "file:./../packages/bob-integration",
-    "@icptokens/token-toolkit": "file:./../packages/token-toolkit"
+    "@icptokens/nns-integration": "workspace:*",
+    "@icptokens/dex-integration": "workspace:*",
+    "@icptokens/bob-integration": "workspace:*",
+    "@icptokens/token-toolkit": "workspace:*"
   }
 }

@@ -35,3 +35,4 @@ export const parseResultResponse = <T, E>(response: Response<T, E>): T => {
 };
 
 export * from "./validateCaller";
+export * from "./icpswapUtils";
