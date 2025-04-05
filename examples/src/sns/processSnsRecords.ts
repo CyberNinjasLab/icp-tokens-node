@@ -1,5 +1,5 @@
 // Import the SnsAggregatorCanister class and required types
-import { SnsAggregatorCanister, SnsAggregatorResponse } from '@icptokens/nns-integration';
+import { SnsAggregatorCanister, SnsDataWrapper } from '@icptokens/nns-integration';
 
 /**
  * This script fetches all paginated SNS data, retrieves details for each SNS,
@@ -8,7 +8,7 @@ import { SnsAggregatorCanister, SnsAggregatorResponse } from '@icptokens/nns-int
  * The collected data can later be processed to create or update existing SNS records.
  */
 
-const fetchAndProcessSnsData = async (): Promise<SnsAggregatorResponse[]> => {
+const fetchAndProcessSnsData = async (): Promise<SnsDataWrapper[]> => {
   // Create an instance of SnsAggregatorCanister with default parameters
   const snsAggregator = new SnsAggregatorCanister();
 
@@ -24,7 +24,7 @@ const fetchAndProcessSnsData = async (): Promise<SnsAggregatorResponse[]> => {
       // Metadata
       // TokenLedgerId: sns.canister_ids.ledger_canister_id // To store in our internal Token Ledgers table...
       // GovernanceId: sns.canister_ids.governance_canister_id // To cache ICP & Token treasuries
-      console.log(sns.meta.name);
+      console.log(sns.getRawData().meta.name);
     }
 
     console.log('All SNS data fetched successfully.');
