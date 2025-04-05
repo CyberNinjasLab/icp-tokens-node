@@ -39,9 +39,9 @@ class TransactionCollector {
     this.baseStorageCanisters = await this.icpSwap.getBaseStorageCanisters();
     console.log(`Found ${this.baseStorageCanisters.length} storage canisters`);
     
-    const latestStorageCanister = this.baseStorageCanisters[0];
-    console.log(`Using storage canister: ${latestStorageCanister}`);
-    
+    // const latestStorageCanister = this.baseStorageCanisters[0];
+    // console.log(`Using storage canister: ${latestStorageCanister}`);
+    const latestStorageCanister = "ryjl3-tyaaa-aaaaa-aaaba-cai";
     await this.icpSwap.setBaseStorageActor(latestStorageCanister);
   }
 
