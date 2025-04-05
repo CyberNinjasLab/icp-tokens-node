@@ -76,8 +76,16 @@ export type CreatePoolTransaction = TransactionInfo & {
     amount2: bigint;
 };
 
+export type ClaimTransaction = TransactionInfo & {
+    token1: string;
+    token2: string;
+    amount1: bigint;
+    amount2: bigint;
+};
+
 export type Transaction =
     | SwapTransaction
     | AddLiquidityTransaction
     | RemoveLiquidityTransaction
-    | CreatePoolTransaction;
+    | CreatePoolTransaction
+    | ClaimTransaction;

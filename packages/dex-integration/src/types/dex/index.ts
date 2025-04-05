@@ -21,14 +21,20 @@ export interface IDexBase {
     getPoolByAddress(address: string): Promise<IPool | null>;
 }
 
-export interface IDexWithPoolTransactions extends IDexBase {
+export interface IDexWithStorageCanisterTransactions extends IDexBase {
     /**
-     * Fetches transactions for a specific pool. 
      * 
-     * @param poolId - The identifier of the pool for which to fetch transactions.
-     * @param startOffset - The starting offset for pagination.
-     * @param limit - The maximum number of transactions to fetch.
-     * @returns A promise that resolves to an array of transactions for the specified pool.
+     * @param startOffset
+     * @param limit 
+     */
+    getStorageCanisterTransactions(startOffset: bigint, limit: bigint): Promise<Transaction[]>;
+
+    /**
+     * Fetches transactions by pool ID.
+     * 
+     * @param poolId - The ID of the pool.
+     * @param startOffset 
+     * @param limit 
      */
     getTransactionsByPool(poolId: string, startOffset: bigint, limit: bigint): Promise<Transaction[]>;
 }
@@ -46,7 +52,8 @@ export interface IDexWithGlobalTransactions extends IDexBase {
 
 /**
  * The main IDex type ensures that a class must implement at least one of:
+ * - `getStorageCanisterTransactions`
  * - `getTransactionsByPool`
  * - `getAllTransactions`
  */
-export type IDex = IDexWithPoolTransactions | IDexWithGlobalTransactions;
+export type IDex = IDexWithStorageCanisterTransactions | IDexWithGlobalTransactions;
