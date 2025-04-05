@@ -4,7 +4,8 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import * as crypto from 'crypto';
-import { ICP_LEDGER_CANISTER_ID, NNS_LEDGER_TOKEN_DISTRIBUTION_DOMAIN } from './config';
+import { NNS_LEDGER_TOKEN_DISTRIBUTION_DOMAIN } from './config';
+import { ICP_LEDGER_CANISTER_ID } from '@icptokens/constants';
 
 /**
  * AccountManager provides utility methods for computing subaccounts

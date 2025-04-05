@@ -24,7 +24,8 @@
     "@dfinity/ledger-icrc": "^2.6.3",
     "@dfinity/principal": "^2.1.3",
     "@dfinity/utils": "^2.7.0",
-    "ic0": "^0.3.2"
+    "ic0": "^0.3.2",
+    "@icptokens/constants": "workspace:*"
   },
   "files": [
     "dist/",

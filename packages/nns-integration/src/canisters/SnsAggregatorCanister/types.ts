@@ -203,3 +203,11 @@ export interface Lifecycle {
   lifecycle: number;
   decentralization_swap_termination_timestamp_seconds: number;
 }
+
+// Add this new interface for commonly accessed properties
+export interface SimplifiedSnsInfo {
+  ledgerCanisterId: string;
+  governanceCanisterId: string;
+  description: string;
+  url: string;
+}

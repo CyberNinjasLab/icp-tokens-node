@@ -1,8 +1,47 @@
 // Import configuration and types
 import { SNS_AGGREGATOR_CANISTER_URL } from '../../utils/config';
-import { SnsAggregatorResponse, CanisterIds } from './types'; // Import types
+import { SnsAggregatorResponse, CanisterIds, SimplifiedSnsInfo } from './types'; // Import types
 
 // Class for interacting with the SNS Aggregator Canister API
+export class SnsDataWrapper {
+  constructor(private data: SnsAggregatorResponse) {}
+
+  getLedgerCanisterId(): string {
+    return this.data.canister_ids.ledger_canister_id;
+  }
+
+  getGovernanceCanisterId(): string {
+    return this.data.canister_ids.governance_canister_id;
+  }
+
+  getName(): string {
+    return this.data.meta.name;
+  }
+
+  getDescription(): string {
+    return this.data.meta.description;
+  }
+
+  getUrl(): string {
+    return this.data.meta.url;
+  }
+
+  // Get all commonly used properties in one call
+  getSimplifiedInfo(): SimplifiedSnsInfo {
+    return {
+      ledgerCanisterId: this.getLedgerCanisterId(),
+      governanceCanisterId: this.getGovernanceCanisterId(),
+      description: this.getDescription(),
+      url: this.getUrl()
+    };
+  }
+
+  // Access to raw data if needed
+  getRawData(): SnsAggregatorResponse {
+    return this.data;
+  }
+}
+
 export class SnsAggregatorCanister {
   private baseUrl: string; // Base URL of the SNS aggregator canister
   private aggregatorVersion: string; // API version to use
@@ -30,10 +69,10 @@ export class SnsAggregatorCanister {
 
   /**
    * Fetches the latest SNS data from the aggregator canister.
-   * @returns A promise that resolves to an array of SnsAggregatorResponse objects.
+   * @returns A promise that resolves to an array of SnsDataWrapper objects.
    * @throws An error if the fetch request fails.
    */
-  public async fetchLatestSnsData(): Promise<SnsAggregatorResponse[]> {
+  public async fetchLatestSnsData(): Promise<SnsDataWrapper[]> {
     try {
       const response = await fetch(`${this.baseUrl}/${this.aggregatorVersion}/sns/list/latest/slow.json`);
       console.log(`${this.baseUrl}/${this.aggregatorVersion}/sns/list/latest/slow.json`);
@@ -43,7 +82,7 @@ export class SnsAggregatorCanister {
       }
       const data: SnsAggregatorResponse[] = await response.json(); // Cast the response to the type
       console.log('Latest SNS data from aggregator:', data);
-      return data;
+      return data.map(sns => new SnsDataWrapper(sns));
     } catch (error) {
       console.error('Error fetching latest SNS data:', error);
       throw error;
@@ -53,10 +92,10 @@ export class SnsAggregatorCanister {
   /**
    * Fetches detailed SNS data for a specific canister ID from the aggregator canister.
    * @param canisterId - The unique identifier of the SNS canister.
-   * @returns A promise that resolves to a single SnsAggregatorResponse object.
+   * @returns A promise that resolves to a single SnsDataWrapper object.
    * @throws An error if the fetch request fails or if the canister ID is invalid.
    */
-  public async fetchSnsDetails(canisterId: string): Promise<SnsAggregatorResponse> {
+  public async fetchSnsDetails(canisterId: string): Promise<SnsDataWrapper> {
     try {
       const response = await fetch(`${this.baseUrl}/${this.aggregatorVersion}/sns/root/${canisterId}/slow.json`);
       if (!response.ok) {
@@ -64,7 +103,7 @@ export class SnsAggregatorCanister {
       }
       const data: SnsAggregatorResponse = await response.json(); // Cast the response to the type
       console.log(`Details for SNS (${canisterId}):`, data);
-      return data;
+      return new SnsDataWrapper(data);
     } catch (error) {
       console.error('Error fetching SNS details:', error);
       throw error;
@@ -74,16 +113,11 @@ export class SnsAggregatorCanister {
   /**
    * Fetches all SNS data using paginated requests.
    * Combines results from multiple pages until all data is retrieved.
-   * @returns A promise that resolves to an array of SnsAggregatorResponse objects containing all SNS data.
+   * @returns A promise that resolves to an array of SnsDataWrapper objects containing all SNS data.
    * @throws An error if the fetch request for the initial page fails.
    */
-  public async fetchAllPaginatedData(): Promise<SnsAggregatorResponse[]> {
+  public async fetchAllPaginatedData(): Promise<SnsDataWrapper[]> {
     try {
-      /**
-       * Helper function to recursively fetch data for a specific page.
-       * @param page - The page number to fetch.
-       * @returns A promise that resolves to an array of SnsAggregatorResponse objects for the page.
-       */
       const fetchPage = async (page: number): Promise<SnsAggregatorResponse[]> => {
         const response = await fetch(this.getPageUrl(page));
         if (!response.ok) {
@@ -93,7 +127,7 @@ export class SnsAggregatorCanister {
           throw new Error('Error loading SNS projects from aggregator canister');
         }
 
-        const data: SnsAggregatorResponse[] = await response.json(); // Cast the response to the type
+        const data: SnsAggregatorResponse[] = await response.json();
 
         // If the page has the full set of results, fetch the next page
         if (data.length === this.pageSize) {
@@ -106,7 +140,7 @@ export class SnsAggregatorCanister {
 
       const allData = await fetchPage(0); // Start fetching from page 0
       console.log(`Fetched ${allData.length} SNS records.`); 
-      return allData;
+      return allData.map(sns => new SnsDataWrapper(sns));
     } catch (error) {
       console.error('Error fetching all paginated SNS data:', error);
       throw error;
