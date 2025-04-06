@@ -237,9 +237,7 @@ export class ICPSwap extends CanisterWrapper implements IDexWithStorageCanisterT
             const newer = transactions.slice(targetIndex);
             console.log(`Found target transaction at index ${targetIndex}. Adding ${newer.length} newer transactions.`);
             newerTransactions.push(...newer);
-
-            // We found the target transaction - everything before it is newer
-            // In ICPSwap, newer transactions come first in the array
+            // exit loop
             foundTargetTransaction = true;
           }
         }
@@ -247,7 +245,6 @@ export class ICPSwap extends CanisterWrapper implements IDexWithStorageCanisterT
         while (foundTargetTransaction && newerTransactions.length < limit) {
             const transactions = await this.getStorageCanisterTransactions(currentOffset, batchSize);
             // Target transaction not in this batch - assume all transactions in this batch are newer
-            // (This will be true if we're scanning chronologically backwards)
             console.log(`Target transaction not found in current batch. Adding ${transactions.length} potentially newer transactions.`);
             
             // Only add transactions if we haven't exceeded the limit
@@ -257,7 +254,6 @@ export class ICPSwap extends CanisterWrapper implements IDexWithStorageCanisterT
             }
 
             currentOffset += batchSize;
-            
         }
         return newerTransactions;
         
