@@ -23,6 +23,7 @@ interface ICPSwapMethods {
   listTokens(): Promise<any[]>;
   getPoolByAddress(address: string): Promise<any>;
   getTrxUntilId(trxId: string, startOffset: bigint, collectedTrxs: Transaction[]): Promise<Transaction[]>;
+  getTrxsAfterTrxId(trxId: string, startOffset: bigint, limit: number): Promise<Transaction[]>;
 }
 
 // Initialize ICPSwap client
@@ -164,6 +165,9 @@ class TransactionExamples {
   async getTrxsUntilId(trxId: string, startOffset: bigint = 0n, collectedTrxs: Transaction[] = []): Promise<Transaction[]> {
     return await this.icpSwap.getTrxUntilId(trxId, startOffset, collectedTrxs)
   }
+  async getTrxsAfterTrxId(trxId: string, startOffset: bigint = 0n, batchSize: number = 10000): Promise<Transaction[]> {
+    return await this.icpSwap.getTrxsAfterTrxId(trxId, startOffset, batchSize)
+  }
   
 }
 
@@ -206,6 +210,13 @@ async function runExamples() {
       const trxs = await transactionExamples.getTrxsUntilId(trxId);
       if (trxs) {
         console.log("** Number of transactions collected:", trxs.length);
+      }
+
+      console.log("** Getting transactions after a specific ID **");
+      const afterTrxId = "qopcz-uyaaa-aaaag-qng3a-cai.3124";
+      const collectedTrxs = await transactionExamples.getTrxsAfterTrxId(afterTrxId);
+      if (collectedTrxs) {
+        console.log("** Number of transactions collected:", collectedTrxs.length);
       }
     }
 

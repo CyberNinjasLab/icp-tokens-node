@@ -162,7 +162,10 @@ export class ICPSwap extends CanisterWrapper implements IDexWithStorageCanisterT
             console.log(`No transactions found `);
             return [];
             }
-            if (trxId) {
+            
+            const lastTransaction = transactions[transactions.length - 1];
+            console.log(`Last transaction ID: ${lastTransaction.id}, Date: ${new Date(Number(lastTransaction.ts) * 1000).toISOString()}`);
+            
             const targetTransaction = transactions.find((tx: Transaction) => tx.id === trxId);
             if (targetTransaction) {
                 // If the transaction is found
@@ -187,7 +190,6 @@ export class ICPSwap extends CanisterWrapper implements IDexWithStorageCanisterT
                 console.log(`Target transaction ID ${trxId} not found in the current batch, searching in the next batch...`);
                 startOffset += 1000n;
                 return await this.getTrxUntilId(trxId, startOffset, collectedTrxs);
-            }
             }
             // Return collected transactions if no transaction ID was provided
             return collectedTrxs;
@@ -216,11 +218,10 @@ export class ICPSwap extends CanisterWrapper implements IDexWithStorageCanisterT
       let currentOffset = startOffset;
       let foundTargetTransaction = false;
       let batchSize = 1000n;
-      let scannedBatches = 0;
       
       try {
         // Keep fetching batches until we find the target transaction or hit safety limits
-        while (!foundTargetTransaction && scannedBatches < 10 && newerTransactions.length < limit) {
+        while (!foundTargetTransaction) {
           console.log(`Fetching batch of transactions (offset: ${currentOffset})`);
           const transactions = await this.getStorageCanisterTransactions(currentOffset, batchSize);
           
@@ -228,23 +229,23 @@ export class ICPSwap extends CanisterWrapper implements IDexWithStorageCanisterT
             console.log("No more transactions found");
             break;
           }
-          
-          // Find the target transaction in this batch
-          const targetIndex = transactions.findIndex(tx => tx.id === trxId);
-          
-          if (targetIndex >= 0) {
+          const targetTransaction = transactions.find((tx: Transaction) => tx.id === trxId);
+          currentOffset += batchSize;
+          if (targetTransaction) {
+            const targetIndex = transactions.findIndex(tx => tx.id === trxId);  
+            // Extract all transactions before the target (these are newer)
+            const newer = transactions.slice(targetIndex);
+            console.log(`Found target transaction at index ${targetIndex}. Adding ${newer.length} newer transactions.`);
+            newerTransactions.push(...newer);
+
             // We found the target transaction - everything before it is newer
             // In ICPSwap, newer transactions come first in the array
             foundTargetTransaction = true;
-            
-            // Extract all transactions before the target (these are newer)
-            const newer = transactions.slice(0, targetIndex);
-            console.log(`Found target transaction at index ${targetIndex}. Adding ${newer.length} newer transactions.`);
-            
-            // Add these to our collection (respecting the limit)
-            const remainingCapacity = limit - newerTransactions.length;
-            newerTransactions.push(...newer.slice(0, remainingCapacity));
-          } else {
+          }
+        }
+
+        while (foundTargetTransaction && newerTransactions.length < limit) {
+            const transactions = await this.getStorageCanisterTransactions(currentOffset, batchSize);
             // Target transaction not in this batch - assume all transactions in this batch are newer
             // (This will be true if we're scanning chronologically backwards)
             console.log(`Target transaction not found in current batch. Adding ${transactions.length} potentially newer transactions.`);
@@ -254,23 +255,11 @@ export class ICPSwap extends CanisterWrapper implements IDexWithStorageCanisterT
             if (remainingCapacity > 0) {
               newerTransactions.push(...transactions.slice(0, remainingCapacity));
             }
-            
-            // Move to the next batch
+
             currentOffset += batchSize;
-            scannedBatches++;
-          }
+            
         }
-        
-        if (!foundTargetTransaction && scannedBatches >= 10) {
-          console.log(`Warning: Reached maximum number of batches (${scannedBatches}) without finding target transaction`);
-        }
-        
-        if (newerTransactions.length >= limit) {
-          console.log(`Reached transaction limit (${limit})`);
-        }
-        
-        // Sort transactions by timestamp to ensure chronological order (newest first)
-        return newerTransactions.sort((a, b) => Number(b.ts) - Number(a.ts));
+        return newerTransactions;
         
       } catch (error) {
         console.error(`Error fetching transactions after ${trxId}:`, error);
