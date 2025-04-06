@@ -148,4 +148,52 @@ export class ICPSwap extends CanisterWrapper implements IDexWithStorageCanisterT
         if (pools.length > 1) throw new Error("multiple pools found for this pair");
         return pools[0];
     }
+
+    /**
+    * Gets the pool id for a specific token pair
+    * the looks for the oldest transaction in the pool, or if transactionId is provided as an argument
+    * then look for that transaction in the pool and get the next trasaction.
+    * Gather all the newer transactions in a list and return them
+    */
+    async getTrxUntilId(trxId: string, startOffset: bigint = 0n, collectedTrxs: Transaction[] = []): Promise<Transaction[]> {
+        try {
+            const transactions = await this.getStorageCanisterTransactions(startOffset, 1000n);
+            if (transactions.length === 0) {
+            console.log(`No transactions found `);
+            return [];
+            }
+            if (trxId) {
+            const targetTransaction = transactions.find((tx: Transaction) => tx.id === trxId);
+            if (targetTransaction) {
+                // If the transaction is found
+                console.log(`Found target transaction ID: ${targetTransaction.id}, Date: ${new Date(Number(targetTransaction.ts) * 1000).toISOString()}`);
+                const targetIndex = transactions.indexOf(targetTransaction);
+                if (targetIndex === 0) {
+                    // add this transaction to the list
+                    return collectedTrxs;
+                }
+                else if (targetIndex === 1) {
+                    // add this transaction to the list
+                    collectedTrxs.push(targetTransaction);
+                    return collectedTrxs;
+                }
+                const newerTransactions = transactions.slice(0, targetIndex + 1);
+                console.log(`Found ${newerTransactions.length} newer transactions`);
+                collectedTrxs.push(...newerTransactions);
+                return collectedTrxs;
+            } else {
+                //If not, keep searching
+                collectedTrxs.push(...transactions);
+                console.log(`Target transaction ID ${trxId} not found in the current batch, searching in the next batch...`);
+                startOffset += 1000n;
+                return await this.getTrxUntilId(trxId, startOffset, collectedTrxs);
+            }
+            }
+            // Return collected transactions if no transaction ID was provided
+            return collectedTrxs;
+        } catch (error) {
+            console.error(`Error fetching transactions`, error);
+            throw new Error(`Error fetching transactions: ${error}`);
+        }
+    }
 }

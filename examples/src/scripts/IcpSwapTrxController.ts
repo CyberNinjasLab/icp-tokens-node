@@ -6,43 +6,46 @@ export const TokenPools = {
   ICP_XP: "j5fx-nqaaa-aaaag-qc74a-cai"
 };
 
+// get ICPSWAP_BASE_INDEX_CANISTER from dex-integration 
+import { ICPSWAP_BASE_INDEX_CANISTER } from "@icptokens/dex-integration/dist/config.js";
+
+
+
+// Configuration
+const IC_HOST = "https://ic0.app";
+const EXAMPLE_POOL_IDS = {
+  BOB_ICP: 'ybilh-nqaaa-aaaag-qkhzq-cai',
+  XP_ICP: 'oj5fx-nqaaa-aaaag-qc74a-cai',
+};
+
+// Define interface for ICPSwap methods we need
+interface ICPSwapMethods {
+  getBaseStorageCanisters(): Promise<string[]>;
+  setBaseStorageActor(address?: string): Promise<void>;
+  getStorageCanisterTransactions(startOffset: bigint, limit: bigint): Promise<Transaction[]>;
+  getTransactionsByPool(poolId: string, startOffset: bigint, limit: bigint): Promise<Transaction[]>;
+  listPools(): Promise<any[]>;
+  listTokens(): Promise<any[]>;
+  getPoolByAddress(address: string): Promise<any>;
+}
+
+// Initialize ICPSwap client
+const initICPSwap = (): ICPSwapMethods => {
+  const agent = new HttpAgent({ host: IC_HOST });
+  return new ICPSwap({ agent }) as unknown as ICPSwapMethods;
+};
+
 /**
  * ICPSwap Transaction Collector
  * Utility class to collect transactions from ICPSwap pools
  */
 class TransactionCollector {
-  private agent!: HttpAgent;
-  private icpSwap!: ICPSwap;
-  private pools: ICPSwapPool[] = [];
+  private icpSwap: ICPSwapMethods;
   private baseStorageCanisters: string[] = [];
 
-  /**
-   * Initialize the collector with IC connection
-   */
-  async initialize(): Promise<void> {
-    try {
-      this.agent = await HttpAgent.create({ host: "https://ic0.app" });
-      await this.agent.fetchRootKey().catch(console.error);
-      this.icpSwap = new ICPSwap({ agent: this.agent });
-      
-      await this.setupStorageCanisters();
-    } catch (error) {
-      console.error("Failed to initialize transaction collector:", error);
-      throw new Error("Initialization failed");
-    }
-  }
 
-  /**
-   * Set up storage canisters for transaction fetching
-   */
-  private async setupStorageCanisters(): Promise<void> {
-    this.baseStorageCanisters = await this.icpSwap.getBaseStorageCanisters();
-    console.log(`Found ${this.baseStorageCanisters.length} storage canisters`);
-    
-    // const latestStorageCanister = this.baseStorageCanisters[0];
-    // console.log(`Using storage canister: ${latestStorageCanister}`);
-    const latestStorageCanister = "ryjl3-tyaaa-aaaaa-aaaba-cai";
-    await this.icpSwap.setBaseStorageActor(latestStorageCanister);
+  constructor() {
+    this.icpSwap = initICPSwap();
   }
 
   /**
@@ -51,19 +54,19 @@ class TransactionCollector {
   * then look for that transaction in the pool and get the next trasaction.
   * Gather all the newer transactions in a list and return them
   */
-  async getTrxUntilId(poolId: string, transactionId: string | null = null, start_offset: bigint = 0n): Promise<Transaction[] | null> {
+  async getTrxUntilId(timestampTrx: number | null = null, start_offset: bigint = 0n): Promise<Transaction[] | null> {
     
     const foundTransactions: Transaction[] = [];
     try {
-      const transactions = await this.icpSwap.getTransactionsByPool(poolId, start_offset, 1000n);
+      const transactions = await this.icpSwap.getStorageCanisterTransactions(start_offset, 1000n);
       if (transactions.length === 0) {
-        console.log(`No transactions found in pool: ${poolId}`);
+        console.log(`No transactions found `);
         return null;
       }
-      if (transactionId) {
-        const targetTransaction = transactions.find(tx => tx.id === transactionId);
+      if (timestampTrx) {
+        const targetTransaction = transactions.find((tx: Transaction) => tx.timestamp === timestampTrx);
         if (targetTransaction) {
-          console.log(`Found target transaction ID: ${targetTransaction.id}, Date: ${new Date(Number(targetTransaction.ts) * 1000).toISOString()}`);
+          console.log(`Found target transaction ID: ${targetTransaction.id}, Date: ${new Date(Number(targetTransaction.timestamp) * 1000).toISOString()}`);
           // return a section of the transactions. from the target transaction to the end
           const targetIndex = transactions.indexOf(targetTransaction);
           const newerTransactions = transactions.slice(targetIndex + 1);
@@ -71,15 +74,20 @@ class TransactionCollector {
           return newerTransactions;
         } else {
           foundTransactions.push(...transactions);
-          const moreTransactions = await this.getTrxUntilId(poolId, transactionId, 1000n);
+          const moreTransactions = await this.getTrxUntilId(timestampTrx, 1000n);
           if (moreTransactions) {
             foundTransactions.push(...moreTransactions);
           }
         }
       }
+      // check if foundTransactions lenght is higher than 3000, then stop
+      if (foundTransactions.length > 3000) {
+        console.log(`Found ${foundTransactions.length} transactions, stopping collection`);
+        return foundTransactions;
+      }
       return foundTransactions
     } catch (error) {
-      console.error(`Error fetching transactions for pool ${poolId}:`, error);
+      console.error(`Error fetching transactions`, error);
       return null;
     }
   }
@@ -112,10 +120,11 @@ async function main() {
     console.log(`Starting transaction collection until ID: ${targetTransactionId}`);
     
     const collector = new TransactionCollector();
-    await collector.initialize();
+    // await collector.initialize();
     
-    const poolId = TokenPools.ICP_XP;
-    const latestTransactions = await collector.getTrxUntilId(poolId, targetTransactionId);
+    // const poolId = TokenPools.ICP_XP;
+    const targetTimestamp = 1743768765
+    const latestTransactions = await collector.getTrxUntilId(targetTimestamp);
     if (latestTransactions) {
       printTransactions(latestTransactions);
     }
