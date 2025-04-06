@@ -196,4 +196,85 @@ export class ICPSwap extends CanisterWrapper implements IDexWithStorageCanisterT
             throw new Error(`Error fetching transactions: ${error}`);
         }
     }
+
+        /**
+     * Gets all transactions that are newer than the specified transaction ID.
+     * It first locates the transaction with the specified ID, then returns all transactions
+     * that came after it (newer ones).
+     * 
+     * @param trxId - The ID of the transaction to use as the starting point
+     * @param startOffset - The offset from which to start fetching transactions
+     * @param limit - Maximum number of transactions to fetch in total (safety limit)
+     * @returns Array of transactions that are newer than the specified transaction ID
+     */
+    async getTrxsAfterTrxId(trxId: string, startOffset: bigint = 0n, limit: number = 1000): Promise<Transaction[]> {
+      if (!trxId) {
+        throw new Error("Transaction ID is required");
+      }
+      
+      const newerTransactions: Transaction[] = [];
+      let currentOffset = startOffset;
+      let foundTargetTransaction = false;
+      let batchSize = 1000n;
+      let scannedBatches = 0;
+      
+      try {
+        // Keep fetching batches until we find the target transaction or hit safety limits
+        while (!foundTargetTransaction && scannedBatches < 10 && newerTransactions.length < limit) {
+          console.log(`Fetching batch of transactions (offset: ${currentOffset})`);
+          const transactions = await this.getStorageCanisterTransactions(currentOffset, batchSize);
+          
+          if (transactions.length === 0) {
+            console.log("No more transactions found");
+            break;
+          }
+          
+          // Find the target transaction in this batch
+          const targetIndex = transactions.findIndex(tx => tx.id === trxId);
+          
+          if (targetIndex >= 0) {
+            // We found the target transaction - everything before it is newer
+            // In ICPSwap, newer transactions come first in the array
+            foundTargetTransaction = true;
+            
+            // Extract all transactions before the target (these are newer)
+            const newer = transactions.slice(0, targetIndex);
+            console.log(`Found target transaction at index ${targetIndex}. Adding ${newer.length} newer transactions.`);
+            
+            // Add these to our collection (respecting the limit)
+            const remainingCapacity = limit - newerTransactions.length;
+            newerTransactions.push(...newer.slice(0, remainingCapacity));
+          } else {
+            // Target transaction not in this batch - assume all transactions in this batch are newer
+            // (This will be true if we're scanning chronologically backwards)
+            console.log(`Target transaction not found in current batch. Adding ${transactions.length} potentially newer transactions.`);
+            
+            // Only add transactions if we haven't exceeded the limit
+            const remainingCapacity = limit - newerTransactions.length;
+            if (remainingCapacity > 0) {
+              newerTransactions.push(...transactions.slice(0, remainingCapacity));
+            }
+            
+            // Move to the next batch
+            currentOffset += batchSize;
+            scannedBatches++;
+          }
+        }
+        
+        if (!foundTargetTransaction && scannedBatches >= 10) {
+          console.log(`Warning: Reached maximum number of batches (${scannedBatches}) without finding target transaction`);
+        }
+        
+        if (newerTransactions.length >= limit) {
+          console.log(`Reached transaction limit (${limit})`);
+        }
+        
+        // Sort transactions by timestamp to ensure chronological order (newest first)
+        return newerTransactions.sort((a, b) => Number(b.ts) - Number(a.ts));
+        
+      } catch (error) {
+        console.error(`Error fetching transactions after ${trxId}:`, error);
+        throw new Error(`Error fetching transactions after ${trxId}: ${error}`);
+      }
+    }
 }
