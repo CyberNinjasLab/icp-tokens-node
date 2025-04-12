@@ -149,54 +149,16 @@ export class ICPSwap extends CanisterWrapper implements IDexWithStorageCanisterT
         return pools[0];
     }
 
-    /**
-    * Gets the pool id for a specific token pair
-    * the looks for the oldest transaction in the pool, or if transactionId is provided as an argument
-    * then look for that transaction in the pool and get the next trasaction.
-    * Gather all the newer transactions in a list and return them
-    */
-    async getTrxUntilId(trxId: string, startOffset: bigint = 0n, collectedTrxs: Transaction[] = []): Promise<Transaction[]> {
-        try {
-            const transactions = await this.getStorageCanisterTransactions(startOffset, 1000n);
-            if (transactions.length === 0) {
-            console.log(`No transactions found `);
-            return [];
-            }
-            
-            const lastTransaction = transactions[transactions.length - 1];
-            console.log(`Last transaction ID: ${lastTransaction.id}, Date: ${new Date(Number(lastTransaction.ts) * 1000).toISOString()}`);
-            
-            const targetTransaction = transactions.find((tx: Transaction) => tx.id === trxId);
-            if (targetTransaction) {
-                // If the transaction is found
-                console.log(`Found target transaction ID: ${targetTransaction.id}, Date: ${new Date(Number(targetTransaction.ts) * 1000).toISOString()}`);
-                const targetIndex = transactions.indexOf(targetTransaction);
-                if (targetIndex === 0) {
-                    // add this transaction to the list
-                    return collectedTrxs;
-                }
-                else if (targetIndex === 1) {
-                    // add this transaction to the list
-                    collectedTrxs.push(targetTransaction);
-                    return collectedTrxs;
-                }
-                const newerTransactions = transactions.slice(0, targetIndex + 1);
-                console.log(`Found ${newerTransactions.length} newer transactions`);
-                collectedTrxs.push(...newerTransactions);
-                return collectedTrxs;
-            } else {
-                //If not, keep searching
-                collectedTrxs.push(...transactions);
-                console.log(`Target transaction ID ${trxId} not found in the current batch, searching in the next batch...`);
-                startOffset += 1000n;
-                return await this.getTrxUntilId(trxId, startOffset, collectedTrxs);
-            }
-            // Return collected transactions if no transaction ID was provided
-            return collectedTrxs;
-        } catch (error) {
-            console.error(`Error fetching transactions`, error);
-            throw new Error(`Error fetching transactions: ${error}`);
+    async getIndexFromTrxId(trxId: string): Promise<bigint> {
+        // extracting the index from the transaction ID
+        const trxIdParts = trxId.split(".");
+        if (trxIdParts.length < 2) {
+            throw new Error("Invalid transaction ID format");
         }
+        const trxIdNumber = trxIdParts[1];
+        const trxIdNumberBigInt = BigInt(trxIdNumber);
+        console.log(`Transaction ID number: ${trxIdNumberBigInt}`);
+        return trxIdNumberBigInt;
     }
 
         /**
@@ -209,57 +171,35 @@ export class ICPSwap extends CanisterWrapper implements IDexWithStorageCanisterT
      * @param limit - Maximum number of transactions to fetch in total (safety limit)
      * @returns Array of transactions that are newer than the specified transaction ID
      */
-    async getTrxsAfterTrxId(trxId: string, startOffset: bigint = 0n, limit: number = 1000): Promise<Transaction[]> {
-      if (!trxId) {
+    async getTrxsAfterTrxId(trxId: string, limit: number = 1000): Promise<Transaction[]> {
+        if (!trxId) {
         throw new Error("Transaction ID is required");
-      }
-      
-      const newerTransactions: Transaction[] = [];
-      let currentOffset = startOffset;
-      let foundTargetTransaction = false;
-      let batchSize = 1000n;
-      
-      try {
-        // Keep fetching batches until we find the target transaction or hit safety limits
-        while (!foundTargetTransaction) {
-          console.log(`Fetching batch of transactions (offset: ${currentOffset})`);
-          const transactions = await this.getStorageCanisterTransactions(currentOffset, batchSize);
-          
-          if (transactions.length === 0) {
-            console.log("No more transactions found");
-            break;
-          }
-          const targetTransaction = transactions.find((tx: Transaction) => tx.id === trxId);
-          currentOffset += batchSize;
-          if (targetTransaction) {
-            const targetIndex = transactions.findIndex(tx => tx.id === trxId);  
-            // Extract all transactions before the target (these are newer)
-            const newer = transactions.slice(targetIndex);
-            console.log(`Found target transaction at index ${targetIndex}. Adding ${newer.length} newer transactions.`);
-            newerTransactions.push(...newer);
-            // exit loop
-            foundTargetTransaction = true;
-          }
         }
-
-        while (foundTargetTransaction && newerTransactions.length < limit) {
-            const transactions = await this.getStorageCanisterTransactions(currentOffset, batchSize);
-            // Target transaction not in this batch - assume all transactions in this batch are newer
-            console.log(`Target transaction not found in current batch. Adding ${transactions.length} potentially newer transactions.`);
-            
-            // Only add transactions if we haven't exceeded the limit
-            const remainingCapacity = limit - newerTransactions.length;
-            if (remainingCapacity > 0) {
-              newerTransactions.push(...transactions.slice(0, remainingCapacity));
-            }
-
-            currentOffset += batchSize;
-        }
-        return newerTransactions;
         
-      } catch (error) {
+        const trxIndex = await this.getIndexFromTrxId(trxId);
+
+        const newerTransactions: Transaction[] = [];
+        let currentOffset = trxIndex;
+        let batchSize = 1000n;
+        
+        try {
+            while (newerTransactions.length < limit) {
+                const transactions = await this.getStorageCanisterTransactions(currentOffset, batchSize);
+                if (transactions.length === 0) {
+                    console.log(`No more transactions found`);
+                    break;
+                }
+                const remainingCapacity = limit - newerTransactions.length;
+                if (remainingCapacity > 0) {
+                    newerTransactions.push(...transactions.slice(0, remainingCapacity));
+                }
+                currentOffset += batchSize;
+            }
+            return newerTransactions;
+            
+        } catch (error) {
         console.error(`Error fetching transactions after ${trxId}:`, error);
         throw new Error(`Error fetching transactions after ${trxId}: ${error}`);
-      }
+        }
     }
 }
