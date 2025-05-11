@@ -32,6 +32,10 @@ Install docker and docker-compose.
 alias dc='docker-compose'
 dc up core --build
 ```
+If using docker compose v2
+```
+docker compose up core --build
+```
 
 Open http://localhost:3001/api.
 

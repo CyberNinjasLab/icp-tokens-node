@@ -188,7 +188,7 @@ async function runExamples() {
     await poolExamples.getPoolDetails(EXAMPLE_POOL_IDS.BOB_ICP);
 
     console.log("\n2. Token Examples:");
-    // // List all tokens
+    // List all tokens
     await tokenExamples.listAllTokens();
 
     console.log("\n3. Transaction Examples:");
@@ -205,16 +205,19 @@ async function runExamples() {
       // Get transactions for a specific pool
       await transactionExamples.getPoolTransactions(EXAMPLE_POOL_IDS.BOB_ICP);
 
-      // console.log("** Getting transactions until a specific ID **");
-      // const trxId = "qopcz-uyaaa-aaaag-qng3a-cai.3124";
-      // const trxs = await transactionExamples.getTrxsUntilId(trxId);
-      // if (trxs) {
-      //   console.log("** Number of transactions collected:", trxs.length);
-      // }
+
 
       console.log("** Getting transactions after a specific ID **");
-      const afterTrxId = "qopcz-uyaaa-aaaag-qng3a-cai.3124";
-      const collectedTrxs = await transactionExamples.getTrxsAfterTrxId(afterTrxId);
+      const lastTrxId = "2uu7v-wqaaa-aaaag-qnhcq-cai.119";
+      const collectedTrxs = await transactionExamples.getTrxsAfterTrxId(lastTrxId);
+      // print the last transaction
+      if (collectedTrxs.length > 0) {
+        console.log(`Last transaction in the batch:`, collectedTrxs[collectedTrxs.length - 1]);
+        console.log(`Last transaction in the batch:`, collectedTrxs[collectedTrxs.length - 2]);
+        console.log(`Last transaction in the batch:`, collectedTrxs[collectedTrxs.length - 3]);
+    } else {
+        console.log(`No transactions found after ${lastTrxId}`);
+    }
       if (collectedTrxs) {
         console.log("** Number of transactions collected:", collectedTrxs.length);
       }
