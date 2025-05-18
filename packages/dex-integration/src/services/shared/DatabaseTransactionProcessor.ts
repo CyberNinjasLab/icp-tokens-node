@@ -1,7 +1,4 @@
-
-// The current file is this: packages/dex-integration/src/services/shared/DatabaseTransactionProcessor.ts
-// In the current fule I would like to import this file: services/core/src/data-layer/client.ts
-import { db } from '@icptokens/core';
+import { DatabaseClient, DatabaseConfig, QueryHelper } from '@icptokens/db-client';
 
 import { TransactionSource, TransactionType, Transaction } from '../../types/shared/Transaction';
 import { ICPSwap } from '../icpswap/ICPSwap';
@@ -12,15 +9,26 @@ import { ICPSwap } from '../icpswap/ICPSwap';
 export class DatabaseTransactionProcessor {
   private icpSwap: ICPSwap;
   private readonly dexServiceName: string;
+  private db: DatabaseClient;
+  private queryHelper: QueryHelper;
   
   /**
    * Create a new DatabaseTransactionProcessor instance
    * @param dexServiceName - The name of the DEX service (e.g., 'ICPSWAP', 'KONGSWAP', 'SONIC')
    * @param icpSwap - Instance of ICPSwap provider
+   * @param dbConfig - Database configuration
    */
-  constructor(dexServiceName: TransactionSource | string, icpSwap: ICPSwap) {
+  constructor(
+    dexServiceName: TransactionSource | string, 
+    icpSwap: ICPSwap, 
+    dbConfig: DatabaseConfig
+  ) {
     this.dexServiceName = dexServiceName;
     this.icpSwap = icpSwap;
+    
+    // Initialize database client
+    this.db = DatabaseClient.getInstance(dbConfig);
+    this.queryHelper = new QueryHelper(this.db);
   }
 
   /**
@@ -42,15 +50,14 @@ export class DatabaseTransactionProcessor {
    * @returns The full transaction ID (canisterId.index) or null if none found
    */
   async getLastProcessedTransaction(canisterId: string): Promise<string | null> {
-    const [pointers] = await db.sequelize.query(
+    const pointers = await this.queryHelper.rawQuery<{ transaction_index: string }>(
       `SELECT transaction_index FROM icptokens.pointers 
        WHERE dex_service_name = :dexServiceName AND canister_id = :canisterId`,
       {
         replacements: { 
           dexServiceName: this.dexServiceName,
           canisterId
-        },
-        type: 'SELECT'
+        }
       }
     );
     
@@ -74,10 +81,8 @@ export class DatabaseTransactionProcessor {
     
     let lastTransactionId = '';
     
-    // Start a database transaction
-    const dbTransaction = await db.sequelize.transaction();
-    
-    try {
+    // Use withTransaction helper to manage the transaction
+    await this.queryHelper.withTransaction(async (transaction) => {
       console.log(`Saving ${transactions.length} transactions to the database...`);
 
       // Process transactions in chunks to avoid query size limits
@@ -108,35 +113,16 @@ export class DatabaseTransactionProcessor {
             token2: 'token2' in tx ? tx.token2 : null,
             amount1: 'amount1' in tx ? tx.amount1.toString() : null,
             amount2: 'amount2' in tx ? tx.amount2.toString() : null,
+            created_at: new Date()
           };
         });
         
-        // Generate placeholders for the SQL query
-        const placeholders = transactionsToInsert.map((_, index) => 
-          `(:id${index}, :type${index}, :source${index}, :from${index}, :to${index}, :ts${index}, :raw${index}, 
-            :token_in${index}, :amount_in${index}, :token_out${index}, :amount_out${index}, :slippage${index}, 
-            :token1${index}, :token2${index}, :amount1${index}, :amount2${index}, NOW())`
-        ).join(',');
-        
-        // Prepare replacements
-        const replacements: Record<string, string | number | null> = {};
-        transactionsToInsert.forEach((tx, index) => {
-          Object.entries(tx).forEach(([key, value]) => {
-            replacements[`${key}${index}`] = value;
-          });
+        // Use the batchInsert helper to insert records
+        await this.queryHelper.batchInsert('transactions', transactionsToInsert, {
+          schema: 'icptokens',
+          transaction,
+          onConflict: 'ON CONFLICT (id, source) DO NOTHING'
         });
-        
-        // Execute batch insert
-        await db.sequelize.query(
-          `INSERT INTO icptokens.transactions 
-           (id, type, source, "from", "to", ts, raw, token_in, amount_in, token_out, amount_out, slippage, token1, token2, amount1, amount2, created_at)
-           VALUES ${placeholders}
-           ON CONFLICT (id, source) DO NOTHING`,
-          {
-            replacements,
-            transaction: dbTransaction
-          }
-        );
       }
       
       // Update the pointer to the last processed transaction
@@ -145,7 +131,7 @@ export class DatabaseTransactionProcessor {
         const transactionIdParts = lastTx.id.split('.');
         const transactionIndex = BigInt(transactionIdParts[transactionIdParts.length - 1]);
         
-        await db.sequelize.query(
+        await this.queryHelper.rawQuery(
           `INSERT INTO icptokens.pointers (dex_service_name, canister_id, transaction_index, updated_at)
            VALUES (:dexServiceName, :canisterId, :transactionIndex, NOW())
            ON CONFLICT (dex_service_name, canister_id) 
@@ -158,23 +144,16 @@ export class DatabaseTransactionProcessor {
               canisterId,
               transactionIndex: transactionIndex.toString()
             },
-            transaction: dbTransaction
+            transaction
           }
         );
       }
-      
-      // Commit the transaction
-      await dbTransaction.commit();
-      console.log(`Successfully saved ${transactions.length} transactions. Last ID: ${lastTransactionId}`);
-      
-      // Return the last transaction ID for continuation
-      return lastTransactionId;
-    } catch (error) {
-      // Rollback in case of error
-      await dbTransaction.rollback();
-      console.error('Error saving transactions:', error);
-      throw error;
-    }
+    });
+    
+    console.log(`Successfully saved ${transactions.length} transactions. Last ID: ${lastTransactionId}`);
+    
+    // Return the last transaction ID for continuation
+    return lastTransactionId;
   }
 
   /**
@@ -234,5 +213,12 @@ export class DatabaseTransactionProcessor {
       console.error('Error processing transactions:', error);
       throw error;
     }
+  }
+  
+  /**
+   * Close the database connection
+   */
+  async closeConnection(): Promise<void> {
+    await this.db.close();
   }
 }

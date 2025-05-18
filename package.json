@@ -12,7 +12,9 @@
     "lint": "turbo run lint",
     "test": "turbo run test"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@icptokens/db-client": "workspace:^"
+  },
   "devDependencies": {
     "prettier": "^3.2.5",
     "turbo": "^2.2.3"

@@ -1,0 +1,38 @@
+{
+  "name": "@icptokens/db-client",
+  "version": "1.0.0",
+  "description": "Database client package for ICP Tokens project",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "test": "jest",
+    "lint": "eslint src --ext .ts",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "database",
+    "postgres",
+    "sequelize",
+    "icp"
+  ],
+  "author": "ICP Tokens Team",
+  "license": "MIT",
+  "dependencies": {
+    "sequelize": "^6.35.0",
+    "pg": "^8.11.0",
+    "pg-hstore": "^2.3.4"
+  },
+  "peerDependencies": {
+    "sequelize": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.0",
+    "rimraf": "^5.0.0",
+    "typescript": "^5.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
