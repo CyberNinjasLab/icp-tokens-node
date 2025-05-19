@@ -215,6 +215,91 @@ export class DatabaseTransactionProcessor {
     }
   }
   
+   /**
+   * Sync transactions from the DEX to the database
+   * 
+   * This is a convenience method that handles the full transaction processing flow:
+   * 1. Initializes the connection
+   * 2. Fetches transactions in batches
+   * 3. Saves them to the database
+   * 4. Updates the pointer for the last processed transaction
+   * 5. Closes the database connection when done
+   * 
+   * @param options Configuration options
+   * @param options.batchSize Number of transactions to fetch in each batch (default: 1000)
+   * @param options.maxBatches Maximum number of batches to process (default: 10)
+   * @param options.autoClose Automatically close the database connection when done (default: true)
+   * @returns Summary of the sync operation
+   */
+  async syncTransactions(options: {
+    batchSize?: number;
+    maxBatches?: number;
+    autoClose?: boolean;
+  } = {}): Promise<{
+    totalProcessed: number;
+    lastTransactionId: string | null;
+    canisterId: string;
+    dexServiceName: string;
+    startTime: Date;
+    endTime: Date;
+    duration: number;
+  }> {
+    const startTime = new Date();
+    const batchSize = options.batchSize ?? 1000;
+    const maxBatches = options.maxBatches ?? 10;
+    const autoClose = options.autoClose ?? true;
+    
+    console.log(`Starting transaction sync for ${this.dexServiceName} at ${startTime.toISOString()}`);
+    console.log(`Configuration: batchSize=${batchSize}, maxBatches=${maxBatches}`);
+    
+    try {
+      // Process transactions in batches
+      const totalProcessed = await this.processTransactionsInBatches(batchSize, maxBatches);
+      
+      // Get the latest canister and transaction ID for reporting
+      const canisterId = await this.initialize();
+      const lastTransactionId = await this.getLastProcessedTransaction(canisterId);
+      
+      const endTime = new Date();
+      const duration = endTime.getTime() - startTime.getTime();
+      
+      // Create summary report
+      const summary = {
+        totalProcessed,
+        lastTransactionId,
+        canisterId,
+        dexServiceName: this.dexServiceName,
+        startTime,
+        endTime,
+        duration
+      };
+      
+      console.log(`
+  Transaction sync completed:
+  - DEX: ${this.dexServiceName}
+  - Canister: ${canisterId}
+  - Transactions processed: ${totalProcessed}
+  - Last transaction ID: ${lastTransactionId}
+  - Duration: ${duration / 1000} seconds
+      `);
+      
+      return summary;
+    } catch (error) {
+      console.error(`Error during transaction sync for ${this.dexServiceName}:`, error);
+      throw error;
+    } finally {
+      // Close the database connection if autoClose is enabled
+      if (autoClose) {
+        try {
+          await this.closeConnection();
+          console.log(`Database connection closed for ${this.dexServiceName}`);
+        } catch (closeError) {
+          console.error(`Error closing database connection for ${this.dexServiceName}:`, closeError);
+        }
+      }
+    }
+  }
+
   /**
    * Close the database connection
    */
