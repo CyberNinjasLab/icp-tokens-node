@@ -24,7 +24,8 @@
     "@dfinity/candid": "^2.2.0",
     "@dfinity/ledger-icrc": "^2.7.0",
     "@dfinity/principal": "^2.2.0",
-    "axios": "^1.7.9"
+    "axios": "^1.7.9",
+    "@icptokens/db-client": "workspace:*"
   },
   "files": [
     "dist/",

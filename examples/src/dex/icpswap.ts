@@ -1,5 +1,8 @@
 import { HttpAgent } from "@dfinity/agent";
-import { ICPSwap, Transaction } from "@icptokens/dex-integration";
+import { DatabaseConfig } from "@icptokens/db-client";
+import { ICPSwap, Transaction, DatabaseTransactionProcessor, TransactionSource } from "@icptokens/dex-integration";
+import dotenv from 'dotenv';
+dotenv.config();
 
 /**
  * ICPSwap Integration Examples
@@ -169,6 +172,130 @@ class TransactionExamples {
     return await this.icpSwap.getTrxsAfterTrxId(trxId, batchSize)
   }
   
+}
+
+// Database configuration
+const dbConfig: DatabaseConfig = {
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '5432'),
+  database: process.env.DB_NAME || 'mydb',
+  user: process.env.DB_USER || 'myuser',
+  password: process.env.DB_PASS || 'password',
+  logging: process.env.NODE_ENV !== 'production'
+};
+
+// IC configuration
+// const IC_HOST = process.env.IC_HOST || "https://ic0.app";
+
+/**
+ * ICPSwap Transaction Sync Example
+ * 
+ * This example demonstrates how to:
+ * 1. Connect to the ICP network
+ * 2. Initialize the ICPSwap client
+ * 3. Connect to the database
+ * 4. Fetch transactions from ICPSwap
+ * 5. Store them in the database
+ * 6. Update the pointer for the last processed transaction
+ */
+async function runDatabaseSync() {
+  console.log("Starting ICPSwap transaction sync example...");
+  console.log(`Database: ${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`);
+  console.log(`IC Host: ${IC_HOST}`);
+
+  try {
+    // Initialize ICPSwap client
+    const agent = new HttpAgent({ host: IC_HOST });
+    const icpSwap = new ICPSwap({ agent });
+
+    // Create database transaction processor
+    const processor = new DatabaseTransactionProcessor(
+      TransactionSource.ICPSWAP,
+      icpSwap as any, // Type assertion needed due to interface incompatibility
+      dbConfig
+    );
+
+    console.log("Created DatabaseTransactionProcessor");
+
+    // Process different batch sizes and limits
+    const syncOptions = [
+      { batchSize: 100, maxBatches: 1, label: "Small initial test" },
+      { batchSize: 1000, maxBatches: 5, label: "Medium-sized sync" },
+    ];
+
+    for (const option of syncOptions) {
+      console.log(`\n--- Running sync: ${option.label} ---`);
+      console.log(`Batch size: ${option.batchSize}, Max batches: ${option.maxBatches}`);
+      
+      const result = await processor.syncTransactions({
+        batchSize: option.batchSize,
+        maxBatches: option.maxBatches,
+        autoClose: false // Keep connection open between runs
+      });
+      
+      console.log(`Sync results for ${option.label}:`);
+      console.log(`- Total transactions processed: ${result.totalProcessed}`);
+      console.log(`- Last transaction ID: ${result.lastTransactionId}`);
+      console.log(`- Total duration: ${result.duration / 1000} seconds`);
+      
+      if (result.totalProcessed > 0) {
+        console.log(`- Average time per transaction: ${result.duration / result.totalProcessed} ms`);
+      }
+    }
+
+    // Finally, close the database connection
+    await processor.closeConnection();
+    console.log("Database connection closed");
+    
+  } catch (error) {
+    console.error("Error in database sync example:", error);
+  }
+}
+
+// Function to test the pointer retrieval and update
+async function testPointerManagement() {
+  console.log("\n--- Testing Pointer Management ---");
+
+  try {
+    // Initialize ICPSwap client
+    const agent = new HttpAgent({ host: IC_HOST });
+    const icpSwap = new ICPSwap({ agent });
+
+    // Create database transaction processor
+    const processor = new DatabaseTransactionProcessor(
+      TransactionSource.ICPSWAP,
+      icpSwap as any,
+      dbConfig
+    );
+
+    // Initialize storage canister
+    const canisterId = await processor.initialize();
+    console.log(`Initialized storage canister: ${canisterId}`);
+
+    // Get current pointer
+    const currentPointer = await processor.getLastProcessedTransaction(canisterId);
+    console.log(`Current pointer: ${currentPointer || 'No pointer found (first run)'}`);
+
+    // If no pointer exists, create a test one
+    if (!currentPointer) {
+      // Save a sample transaction to create a pointer
+      const transactions = await icpSwap.getStorageCanisterTransactions(0n, 1n);
+      if (transactions.length > 0) {
+        await processor.saveTransactions(transactions, canisterId);
+        const newPointer = await processor.getLastProcessedTransaction(canisterId);
+        console.log(`Created initial pointer: ${newPointer}`);
+      } else {
+        console.log("No transactions found to create a pointer");
+      }
+    }
+
+    // Close the database connection
+    await processor.closeConnection();
+    console.log("Database connection closed");
+    
+  } catch (error) {
+    console.error("Error in pointer management test:", error);
+  }
 }
 
 /**

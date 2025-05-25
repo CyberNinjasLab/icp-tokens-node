@@ -26,7 +26,9 @@
     "@icptokens/nns-integration": "file:./../packages/nns-integration",
     "@icptokens/dex-integration": "file:./../packages/dex-integration",
     "@icptokens/bob-integration": "file:./../packages/bob-integration",
-    "@icptokens/token-toolkit": "file:./../packages/token-toolkit"
+    "@icptokens/token-toolkit": "file:./../packages/token-toolkit",
+    "@icptokens/db-client": "file:./../packages/db-client"
+
   },
   "devDependencies": {
     "@types/node": "^18.11.0",
@@ -35,6 +37,7 @@
     "@icptokens/nns-integration": "workspace:*",
     "@icptokens/dex-integration": "workspace:*",
     "@icptokens/bob-integration": "workspace:*",
-    "@icptokens/token-toolkit": "workspace:*"
+    "@icptokens/token-toolkit": "workspace:*",
+    "@icptokens/db-client": "workspace:*"
   }
 }

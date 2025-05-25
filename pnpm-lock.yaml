@@ -8,9 +8,12 @@ importers:
 
   .:
     dependencies:
-      '@icptokens/db-client':
-        specifier: workspace:^
-        version: link:packages/db-client
+      '@types/dotenv':
+        specifier: ^8.2.3
+        version: 8.2.3
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.5.0
     devDependencies:
       prettier:
         specifier: ^3.2.5
@@ -32,13 +35,16 @@ importers:
         version: 2.2.0
       '@dfinity/sns':
         specifier: ^3.2.3
-        version: 3.2.6(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/ledger-icrc@2.7.0)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0)
+        version: 3.6.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/ledger-icrc@2.8.1)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0)
       '@dfinity/utils':
         specifier: ^2.6.0
         version: 2.8.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
       '@icptokens/bob-integration':
         specifier: file:./../packages/bob-integration
         version: file:packages/bob-integration
+      '@icptokens/db-client':
+        specifier: file:./../packages/db-client
+        version: file:packages/db-client(sequelize@6.37.6)
       '@icptokens/dex-integration':
         specifier: file:./../packages/dex-integration
         version: file:packages/dex-integration(@dfinity/utils@2.8.0)
@@ -120,6 +126,9 @@ importers:
       '@dfinity/principal':
         specifier: ^2.2.0
         version: 2.2.0
+      '@icptokens/db-client':
+        specifier: workspace:*
+        version: link:../db-client
       axios:
         specifier: ^1.7.9
         version: 1.7.9
@@ -787,6 +796,20 @@ packages:
       '@dfinity/utils': 2.8.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
     dev: false
 
+  /@dfinity/ledger-icrc@2.8.1(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0):
+    resolution: {integrity: sha512-whoZYzHMGXSk4CGp75MDTgMkpaMAhN3LJ3U+ljxpCruxe7dk6C8HKKNiK/YAGaf0YQvveLL8gy8IGJCjM9STOw==}
+    peerDependencies:
+      '@dfinity/agent': ^2.0.0
+      '@dfinity/candid': ^2.0.0
+      '@dfinity/principal': ^2.0.0
+      '@dfinity/utils': ^2.13.0
+    dependencies:
+      '@dfinity/agent': 2.2.0(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
+      '@dfinity/candid': 2.2.0(@dfinity/principal@2.2.0)
+      '@dfinity/principal': 2.2.0
+      '@dfinity/utils': 2.8.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
+    dev: false
+
   /@dfinity/principal@0.19.3:
     resolution: {integrity: sha512-+nixVvdGt7ECxRvLXDXsvU9q9sSPssBtDQ4bXa149SK6gcYcmZ6lfWIi3DJNqj3tGROxILVBsguel9tECappsA==}
     dependencies:
@@ -799,18 +822,18 @@ packages:
       '@noble/hashes': 1.6.0
     dev: false
 
-  /@dfinity/sns@3.2.6(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/ledger-icrc@2.7.0)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0):
-    resolution: {integrity: sha512-+0JVB+jmxGjfE0+JzmqzulQjiLsFTrP3OwqpfY99A5Wfe3UnwxzFDzlNrxEMQ+9+f1dkFXe3Hw//AEPbkgj5oQ==}
+  /@dfinity/sns@3.6.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/ledger-icrc@2.8.1)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0):
+    resolution: {integrity: sha512-BzdIzhGU8V7y1Mdhmh+p3KbjMv2O6mMLTi7AvWwdba/BORUKary3iufFWLk9BSRyzz9nHVsXQ2PWUzAQF6QvEA==}
     peerDependencies:
       '@dfinity/agent': ^2.0.0
       '@dfinity/candid': ^2.0.0
-      '@dfinity/ledger-icrc': ^2.7.0
+      '@dfinity/ledger-icrc': ^2.8.1
       '@dfinity/principal': ^2.0.0
-      '@dfinity/utils': ^2.8.0
+      '@dfinity/utils': ^2.13.0
     dependencies:
       '@dfinity/agent': 2.2.0(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
       '@dfinity/candid': 2.2.0(@dfinity/principal@2.2.0)
-      '@dfinity/ledger-icrc': 2.7.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0)
+      '@dfinity/ledger-icrc': 2.8.1(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0)
       '@dfinity/principal': 2.2.0
       '@dfinity/utils': 2.8.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)
       '@noble/hashes': 1.6.0
@@ -1551,6 +1574,13 @@ packages:
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
     dependencies:
       '@types/ms': 2.1.0
+    dev: false
+
+  /@types/dotenv@8.2.3:
+    resolution: {integrity: sha512-g2FXjlDX/cYuc5CiQvyU/6kkbP1JtmGzh0obW50zD7OKeILVL0NSpPWLXVfqoAGQjom2/SLLx9zHq0KXvD6mbw==}
+    deprecated: This is a stub types definition. dotenv provides its own type definitions, so you do not need this installed.
+    dependencies:
+      dotenv: 16.5.0
     dev: false
 
   /@types/express-serve-static-core@4.19.5:
@@ -3086,6 +3116,11 @@ packages:
 
   /dotenv@16.4.5:
     resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
+    engines: {node: '>=12'}
+    dev: false
+
+  /dotenv@16.5.0:
+    resolution: {integrity: sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==}
     engines: {node: '>=12'}
     dev: false
 
@@ -7336,6 +7371,20 @@ packages:
       '@dfinity/principal': 2.2.0
     dev: false
 
+  file:packages/db-client(sequelize@6.37.6):
+    resolution: {directory: packages/db-client, type: directory}
+    id: file:packages/db-client
+    name: '@icptokens/db-client'
+    peerDependencies:
+      sequelize: ^6.0.0
+    dependencies:
+      pg: 8.13.3
+      pg-hstore: 2.3.4
+      sequelize: 6.37.6(pg-hstore@2.3.4)(pg@8.13.3)
+    transitivePeerDependencies:
+      - pg-native
+    dev: false
+
   file:packages/dex-integration(@dfinity/utils@2.8.0):
     resolution: {directory: packages/dex-integration, type: directory}
     id: file:packages/dex-integration
@@ -7346,6 +7395,7 @@ packages:
       '@dfinity/candid': 2.2.0(@dfinity/principal@2.2.0)
       '@dfinity/ledger-icrc': 2.7.0(@dfinity/agent@2.2.0)(@dfinity/candid@2.2.0)(@dfinity/principal@2.2.0)(@dfinity/utils@2.8.0)
       '@dfinity/principal': 2.2.0
+      '@icptokens/db-client': link:packages/db-client
       axios: 1.7.9
     transitivePeerDependencies:
       - '@dfinity/utils'
